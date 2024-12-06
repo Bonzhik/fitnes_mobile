@@ -27,13 +27,16 @@ namespace DAL.Repositories.Implementations
 
         public async Task<bool> DeleteAsync(T entity)
         {
-            _db.Set<T>().Remove(entity);
+            entity.IsDeleted = true; 
+
+            _db.Update(entity);
+
             return await SaveAsync();
         }
 
         public async Task<IQueryable<T>> GetAllAsync()
         {
-            return _db.Set<T>();
+            return _db.Set<T>().Where(e => e.IsDeleted == false);
         }
 
         public async Task<T> GetByIdAsync(int id)

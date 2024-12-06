@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Business.Dtos.Read
+namespace Business.Dtos.Write
 {
-    public class TrainingCommentR
+    public class TrainingCommentW
     {
-        public long Id { get; set; }
         public string Text { get; set; }
-        public UserR UserR { get; set; }
+        public long CommentTo { get; set; }
     }
 }
