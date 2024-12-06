@@ -3,6 +3,6 @@
     public class Planner : BaseEntity
     {
         public User User { get; set; }
-        public ICollection<Day> Days { get; set; }
+        public virtual ICollection<Day> Days { get; set; }
     }
 }

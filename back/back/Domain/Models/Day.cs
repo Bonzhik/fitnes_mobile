@@ -2,8 +2,9 @@
 {
     public class Day : BaseEntity
     {
-        public Planner Planner { get; set; }
-        public ICollection<Product> Products { get; set; } = [];
-        public ICollection<Training> Trainings { get; set; } = [];
+        public DateTime DayDate { get; set; }
+        public virtual Planner Planner { get; set; }
+        public virtual ICollection<Product> Products { get; set; } = [];
+        public virtual ICollection<Training> Trainings { get; set; } = [];
     }
 }

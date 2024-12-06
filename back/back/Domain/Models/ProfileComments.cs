@@ -2,8 +2,8 @@
 {
     public class ProfileComments : BaseEntity
     {
-        public User CommentBy { get; set; }
-        public User CommentTo { get; set; }
+        public virtual User CommentBy { get; set; }
+        public virtual User CommentTo { get; set; }
         public string Text { get; set; }
     }
 }

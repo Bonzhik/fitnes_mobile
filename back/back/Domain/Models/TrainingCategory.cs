@@ -3,6 +3,6 @@
     public class TrainingCategory : BaseEntity
     {
         public string CategoryName { get; set; }
-        public ICollection<Training> Trainings { get; set; }
+        public virtual ICollection<Training> Trainings { get; set; }
     }
 }

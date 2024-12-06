@@ -2,11 +2,11 @@
 {
     public class Training : BaseEntity
     {
-        public User CreatedBy { get; set; }
-        public ICollection<User> Users { get; set; } = [];
-        public ICollection<TrainingComments> Comments { get; set; } = [];
-        public TrainingCategory TrainingCategory { get; set; }
-        public ICollection<Exercise> Exercises { get; set; } = [];
-        public ICollection<Day> Days { get; set; } = [];
+        public virtual User CreatedBy { get; set; }
+        public virtual ICollection<User> Users { get; set; } = [];
+        public virtual ICollection<TrainingComments> Comments { get; set; } = [];
+        public virtual TrainingCategory TrainingCategory { get; set; }
+        public virtual ICollection<Exercise> Exercises { get; set; } = [];
+        public virtual ICollection<Day> Days { get; set; } = [];
     }
 }

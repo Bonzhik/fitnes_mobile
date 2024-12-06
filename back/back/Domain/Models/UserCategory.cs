@@ -3,6 +3,6 @@
     public class UserCategory : BaseEntity
     {
         public string CategoryName { get; set; }
-        public ICollection<User> Users { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }
