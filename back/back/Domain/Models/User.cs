@@ -1,16 +1,9 @@
-﻿using Common.Classes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DAL.Entities
+﻿namespace Domain.Models
 {
     public class User : BaseEntity
     {
         public string Email { get; set; }
-        public string PasswordHash {  get; set; }
+        public string PasswordHash { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public float Height { get; set; }
@@ -23,5 +16,6 @@ namespace DAL.Entities
         public ICollection<ProfileComments> ThisProfileComments { get; set; } = [];
         public ICollection<ProfileComments> ProfileComments { get; set; } = [];
         public ICollection<TrainingComments> TrainingComments { get; set; } = [];
+        public string RefreshToken { get; set; }
     }
 }

@@ -1,10 +1,5 @@
-﻿using DAL.Entities;
+﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Context
 {
@@ -15,7 +10,7 @@ namespace DAL.Context
             Database.EnsureCreated();
         }
 
-        public DbSet<Day> Days {  get; set; }
+        public DbSet<Day> Days { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Planner> Planners { get; set; }
         public DbSet<Product> Products { get; set; }

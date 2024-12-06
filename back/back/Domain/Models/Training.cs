@@ -1,12 +1,4 @@
-﻿using Common.Classes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DAL.Entities
+﻿namespace Domain.Models
 {
     public class Training : BaseEntity
     {
@@ -15,6 +7,6 @@ namespace DAL.Entities
         public ICollection<TrainingComments> Comments { get; set; } = [];
         public TrainingCategory TrainingCategory { get; set; }
         public ICollection<Exercise> Exercises { get; set; } = [];
-        public ICollection<Day> Days {  get; set; } = [];
+        public ICollection<Day> Days { get; set; } = [];
     }
 }
