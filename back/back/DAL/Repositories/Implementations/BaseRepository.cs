@@ -39,7 +39,7 @@ namespace DAL.Repositories.Implementations
             return _db.Set<T>().Where(e => e.IsDeleted == false);
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(long id)
         {
             return await _db.Set<T>().FindAsync(id);
         }

@@ -10,6 +10,5 @@ namespace Business.Dtos.Read
     {
         public long Id { get; set; }
         public UserR CreatedBy { get; set; }
-        public TrainingCategoryR CategoryR { get; set; }
     }
 }

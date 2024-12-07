@@ -10,7 +10,7 @@ namespace DAL.Repositories.Interfaces
     public interface IBaseRepository<T> where T : BaseEntity
     {
         Task<IQueryable<T>> GetAllAsync();
-        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsync(long id);
         Task<bool> AddAsync(T entity);
         Task<bool> UpdateAsync(T entity);
         Task<bool> DeleteAsync(T entity);

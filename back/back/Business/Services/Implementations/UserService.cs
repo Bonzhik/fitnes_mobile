@@ -1,4 +1,5 @@
 ﻿using Business.Dtos.Auth;
+using Business.Dtos.Read;
 using Business.Services.Interfaces;
 using DAL.Repositories.Interfaces;
 using Domain.Models;
@@ -13,13 +14,15 @@ namespace Business.Services.Implementations
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserCategoryRepository _userCategoryRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IUserCategoryRepository userCategoryRepository)
         {
             _userRepository = userRepository;
+            _userCategoryRepository = userCategoryRepository;
         }
 
-        public Task<bool> CreateUserAsync(RegisterDto registerDto)
+        public async Task<bool> CreateUserAsync(RegisterDto registerDto)
         {
             var user = new User()
             {
@@ -31,7 +34,35 @@ namespace Business.Services.Implementations
                 Weigth = registerDto.Weigth
             };
 
-            return _userRepository.AddAsync(user);
+            return await _userRepository.AddAsync(user);
+        }
+
+        public async Task<UserR> GetUserByIdAsync(long userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var category = await _userCategoryRepository.GetByUser(userId);
+
+            var result = new UserR
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Height = user.Height,
+                Weigth = user.Weigth,
+                CategoryR = new UserCategoryR
+                {
+                    Id = category.Id,
+                    CategoryName = category.CategoryName
+                }
+            };
+
+            return result;
         }
     }
 }

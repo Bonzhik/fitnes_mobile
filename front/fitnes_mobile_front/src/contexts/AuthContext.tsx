@@ -1,30 +1,32 @@
-import React, {createContext, useState, ReactNode} from 'react';
-import { saveRefreshToken, removeRefreshToken} from '../utils/storage';
+import React, { createContext, ReactNode, useState } from 'react';
+import { saveRefreshToken, removeRefreshToken, saveAccessToken, removeAccessToken } from '../utils/storage';
 
-export interface AuthContextType{
-    accessToken: string | null;
+export interface AuthContextType {
     login: (accessToken: string, refreshToken: string) => Promise<void>;
     logout: () => Promise<void>;
+    isAuth: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({children}: {children : ReactNode}) => {
-   const [accessToken, setAccessToken] = useState<string | null>(null);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [isAuth, setIsAuth] = useState<boolean>(false);
 
-   const login = async (accessToken: string, refreshToken: string) => {
-    setAccessToken(accessToken);
-    await saveRefreshToken(refreshToken);
-   };
+    const login = async (accessToken: string, refreshToken: string) => {
+        await saveAccessToken(accessToken);
+        await saveRefreshToken(refreshToken);
+        setIsAuth(true);
+    };
 
-   const logout = async() => {
-    setAccessToken(null);
-    await removeRefreshToken();
-   };
+    const logout = async () => {
+        await removeAccessToken();
+        await removeRefreshToken();
+        setIsAuth(false);
+    };
 
-   return(
-    <AuthContext.Provider value = {{accessToken, login, logout}}>
-        {children}
-    </AuthContext.Provider>
-   );
+    return (
+        <AuthContext.Provider value={{ login, logout, isAuth}}>
+            {children}
+        </AuthContext.Provider>
+    );
 };

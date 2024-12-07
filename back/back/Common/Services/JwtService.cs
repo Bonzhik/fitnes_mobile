@@ -28,7 +28,7 @@ namespace Common.Services
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Email, user.Email),
-                new("id", user.Id.ToString())
+                new(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));

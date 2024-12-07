@@ -9,7 +9,7 @@ const AppNavigator = () => {
 
     return(
         <NavigationContainer>
-            {!auth?.accessToken ? <MainStack/> : <AuthStack/>}
+            {auth?.isAuth ? <MainStack/> : <AuthStack/>}
         </NavigationContainer>
     );
 };
