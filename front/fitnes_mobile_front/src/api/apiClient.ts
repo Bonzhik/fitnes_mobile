@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getAccessToken, getRefreshToken, saveAccessToken, saveRefreshToken } from '../utils/storage';
 
 const api = axios.create({
-  baseURL: 'https://localhost:5176/api',
+  baseURL: 'https://localhost:7153/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
     const refreshToken = await getRefreshToken();
     if (!refreshToken) { return null; }
 
-    const response = await axios.post('https://localhost:5176/api/auth/refresh', {
+    const response = await axios.post('https://localhost:7153/api/auth/refresh', {
       refreshToken,
     });
     const { accessToken, newRefreshToken } = response.data;
@@ -29,6 +29,16 @@ const refreshAccessToken = async (): Promise<string | null> => {
     return null;
   }
 };
+
+api.interceptors.request.use(request => {
+  console.log('Starting Request', request);
+  return request;
+});
+
+api.interceptors.response.use(response => {
+  console.log('Response:', response);
+  return response;
+});
 
 api.interceptors.response.use(
   (response) => response,
