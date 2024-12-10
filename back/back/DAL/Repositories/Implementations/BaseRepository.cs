@@ -34,7 +34,7 @@ namespace DAL.Repositories.Implementations
             return await SaveAsync();
         }
 
-        public async Task<IQueryable<T>> GetAllAsync()
+        public IQueryable<T> GetAllAsync()
         {
             return _db.Set<T>().Where(e => e.IsDeleted == false);
         }

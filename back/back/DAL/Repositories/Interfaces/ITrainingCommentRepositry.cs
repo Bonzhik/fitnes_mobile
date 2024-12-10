@@ -9,5 +9,6 @@ namespace DAL.Repositories.Interfaces
 {
     public interface ITrainingCommentRepositry : IBaseRepository<TrainingComments>
     {
+        IQueryable<TrainingComments> GetByTrainingId(long trainingId);
     }
 }

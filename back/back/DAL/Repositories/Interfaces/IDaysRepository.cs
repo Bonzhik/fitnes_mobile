@@ -9,5 +9,6 @@ namespace DAL.Repositories.Interfaces
 {
     public interface IDaysRepository : IBaseRepository<Day>
     {
+        IQueryable<Day> GetByPlannerId(long plannerId);
     }
 }

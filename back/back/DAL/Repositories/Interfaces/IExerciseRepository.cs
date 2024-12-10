@@ -9,5 +9,6 @@ namespace DAL.Repositories.Interfaces
 {
     public interface IExerciseRepository : IBaseRepository<Exercise>
     {
+        IQueryable<Exercise> GetByTrainingId(long trainingId);
     }
 }

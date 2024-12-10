@@ -9,5 +9,6 @@ namespace DAL.Repositories.Interfaces
 {
     public interface IPlannerRepository : IBaseRepository<Planner>
     {
+        Task<Planner> GetPlannerByUserIdAsync(long userId);
     }
 }

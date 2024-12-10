@@ -9,5 +9,6 @@ namespace DAL.Repositories.Interfaces
 {
     public interface IProfileCommentRepository : IBaseRepository<ProfileComments>
     {
+        IQueryable<ProfileComments> GetByUserId(long userId);
     }
 }

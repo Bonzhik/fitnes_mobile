@@ -9,5 +9,6 @@ namespace DAL.Repositories.Interfaces
 {
     public interface ITrainingCategoryRepository : IBaseRepository<TrainingCategory>
     {
+        Task<TrainingCategory> GetByTrainingIdAsync(long trainingId);
     }
 }
