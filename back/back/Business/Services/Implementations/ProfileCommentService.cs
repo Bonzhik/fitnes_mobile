@@ -1,11 +1,8 @@
 using Business.Dtos.Read;
+using Business.Dtos.Write;
 using Business.Services.Interfaces;
 using DAL.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain.Models;
 
 namespace Business.Services.Implementations
 {
@@ -13,11 +10,25 @@ namespace Business.Services.Implementations
     {
         private readonly IProfileCommentRepository _profileCommentRepository;
         private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
 
-        public ProfileCommentService(IProfileCommentRepository profileCommentRepository, IUserService userService)
+        public ProfileCommentService(IProfileCommentRepository profileCommentRepository, IUserService userService, IUserRepository userRepository)
         {
             _profileCommentRepository = profileCommentRepository;
             _userService = userService;
+            _userRepository = userRepository;
+        }
+
+        public async Task<bool> CreateCommentAsync(ProfileCommentW profileCommentW, long userId)
+        {
+            var comment = new ProfileComments
+            {
+                CommentBy = await _userRepository.GetByIdAsync(userId),
+                CommentTo = await _userRepository.GetByIdAsync(profileCommentW.CommentTo),
+                Text = profileCommentW.Text,
+            };
+
+            return await _profileCommentRepository.AddAsync(comment);
         }
 
         public async Task<ICollection<ProfileCommentR>> GetByUserIdAsync(long userId)

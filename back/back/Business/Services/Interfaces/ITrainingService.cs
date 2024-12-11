@@ -1,4 +1,5 @@
 ﻿using Business.Dtos.Read;
+using Business.Dtos.Write;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,6 @@ namespace Business.Services.Interfaces
     {
         Task<ICollection<TrainingR>> GetByUserIdAsync(long userId);
         Task<TrainingR> GetByIdAsync(long id);
+        Task<bool> CreateTrainingAsync(TrainingW trainingW, long userId);
     }
 }

@@ -1,7 +1,9 @@
 using Business.Dtos.Read;
+using Business.Dtos.Write;
 using Business.Services.Interfaces;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +16,27 @@ namespace Business.Services.Implementations
     {
         private readonly ITrainingCommentRepositry _trainingCommentRepository;
         private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
+        private readonly ITrainingRepository _trainingRepository;
 
-        public TrainingCommentService(ITrainingCommentRepositry trainingCommentRepository, IUserService userService)
+        public TrainingCommentService(ITrainingCommentRepositry trainingCommentRepository, IUserService userService, IUserRepository userRepository, ITrainingRepository trainingRepository)
         {
             _trainingCommentRepository = trainingCommentRepository;
             _userService = userService;
+            _userRepository = userRepository;
+            _trainingRepository = trainingRepository;
+        }
+
+        public async Task<bool> CreateCommentAsync(TrainingCommentW trainingCommentW, long userId)
+        {
+            var comment = new TrainingComments
+            {
+                CommentBy = await _userRepository.GetByIdAsync(userId),
+                CommentTo = await _trainingRepository.GetByIdAsync(trainingCommentW.CommentTo),
+                Text = trainingCommentW.Text,
+            };
+
+            return await _trainingCommentRepository.AddAsync(comment);
         }
 
         public async Task<ICollection<TrainingCommentR>> GetByTrainingIdAsync(long trainingId)

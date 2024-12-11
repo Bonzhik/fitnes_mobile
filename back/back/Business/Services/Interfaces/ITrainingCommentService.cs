@@ -1,4 +1,5 @@
 ﻿using Business.Dtos.Read;
+using Business.Dtos.Write;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Business.Services.Interfaces
     public interface ITrainingCommentService
     {
         Task<ICollection<TrainingCommentR>> GetByTrainingIdAsync(long trainingId);
+        Task<bool> CreateCommentAsync(TrainingCommentW trainingCommentW, long userId);
     }
 }

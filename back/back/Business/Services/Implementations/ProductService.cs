@@ -18,6 +18,28 @@ namespace Business.Services.Implementations
             _productRepository = productRepository;
         }
 
+        public async Task<ICollection<ProductR>> GetAllAsync()
+        {
+            var products = _productRepository.GetAllAsync();
+
+            List<ProductR> productDtos = [];
+
+            foreach (var product in products)
+            {
+                productDtos.Add(new ProductR
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Proteins = product.Proteins,
+                    Fats = product.Fats,
+                    Carbohydrates = product.Carbohydrates,
+                    Kcals = product.Kcals,
+                });
+            }
+
+            return productDtos;
+        }
+
         public async Task<ICollection<ProductR>> GetByDayIdAsync(long dayId)
         {
             var products = _productRepository.GetByDayId(dayId);
