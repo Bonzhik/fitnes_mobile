@@ -7,11 +7,11 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProfileCommentController : ControllerBase
+    public class ProfileCommentsController : ControllerBase
     {
         private readonly IProfileCommentService _profileCommentService;
 
-        public ProfileCommentController(IProfileCommentService profileCommentService)
+        public ProfileCommentsController(IProfileCommentService profileCommentService)
         {
             _profileCommentService = profileCommentService;
         }

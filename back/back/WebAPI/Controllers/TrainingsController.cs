@@ -7,11 +7,11 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TrainingController : ControllerBase
+    public class TrainingsController : ControllerBase
     {
         private readonly ITrainingService _trainingService;
 
-        public TrainingController(ITrainingService trainingService)
+        public TrainingsController(ITrainingService trainingService)
         {
             _trainingService = trainingService;
         }
