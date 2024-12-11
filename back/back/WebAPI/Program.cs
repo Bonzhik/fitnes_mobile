@@ -41,6 +41,9 @@ builder.Services.AddScoped<ITrainingCategoryRepository, TrainingCategoryReposito
 builder.Services.AddScoped<ITrainingCommentRepositry, TrainingCommentRepository>();  
 builder.Services.AddScoped<ITrainingRepository, TrainingRepository>();  
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITrainingService, TrainingService>();
+builder.Services.AddScoped<IProfileCommentService, ProfileCommentService>();
+builder.Services.AddScoped<IPlannerService, PlannerService>();
 builder.Services.AddScoped<IAuthService,  AuthService>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 

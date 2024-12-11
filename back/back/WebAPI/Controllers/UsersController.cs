@@ -10,19 +10,78 @@ namespace WebAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IPlannerService _plannerService;
+        private readonly ITrainingService _trainingService;
+        private readonly IProfileCommentService _profileCommentService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IPlannerService plannerService, ITrainingService trainingService, IProfileCommentService profileCommentService)
         {
             _userService = userService;
+            _plannerService = plannerService;
+            _trainingService = trainingService;
+            _profileCommentService = profileCommentService;
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Get()
         {
             long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
 
             var result = await _userService.GetUserByIdAsync(userId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("planners")]
+        public async Task<IActionResult> GetPlanner()
+        {
+            long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
+
+            var result = await _plannerService.GetByUserIdAsync(userId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("trainings")]
+        public async Task<IActionResult> GetTrainings()
+        {
+            long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
+
+            var result = await _trainingService.GetByUserIdAsync(userId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("comments")]
+        public async Task<IActionResult> GetComments()
+        {
+            long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
+
+            var result = await _profileCommentService.GetByUserIdAsync(userId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{userId}/planners")]
+        public async Task<IActionResult> GetPlanner(long userId)
+        {
+            var result = await _plannerService.GetByUserIdAsync(userId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{userId}/trainings")]
+        public async Task<IActionResult> GetTrainings(long userId)
+        {
+            var result = await _trainingService.GetByUserIdAsync(userId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{userId}/comments")]
+        public async Task<IActionResult> GetComments(long userId)
+        { 
+            var result = await _profileCommentService.GetByUserIdAsync(userId);
 
             return Ok(result);
         }
