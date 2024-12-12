@@ -47,6 +47,24 @@ namespace Business.Services.Implementations
             return await _trainingRepository.AddAsync(training);
         }
 
+        public async Task<ICollection<TrainingR>> GetByDayAsync(long dayId)
+        {
+            var trainings = _trainingRepository.GetByDayId(dayId);
+
+            List<TrainingR> trainingsDto = [];
+
+            foreach (var training in trainings)
+            {
+                trainingsDto.Add(new TrainingR
+                {
+                    Id = training.Id,
+                    CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
+                });
+            }
+
+            return trainingsDto;
+        }
+
         public async Task<TrainingR> GetByIdAsync(long id)
         {
             var training = await _trainingRepository.GetByIdAsync(id);

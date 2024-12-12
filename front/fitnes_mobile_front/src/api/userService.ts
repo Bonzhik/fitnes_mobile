@@ -1,19 +1,6 @@
-export interface UserCategoryDto {
-    id: number;
-    categoryName: string;
-}
-
-export interface UserDto {
-    id: number;
-    email: string;
-    firstName: string;
-    lastName: string;
-    height: number;
-    weight: number;
-    category: UserCategoryDto;
-}
-
 import api from './apiClient';
+import { UserDto } from '../dtos/dtos';
+import { saveUserId } from '../utils/storage';
 
 export class UserService {
     /**
@@ -23,8 +10,19 @@ export class UserService {
     public static async getCurrentUser(): Promise<UserDto> {
         try {
             const response = await api.get<UserDto>('/api/users');
+            await saveUserId(response.data.id);
             return response.data;
         } catch (error) {
+            console.error('Error fetching user data:', error);
+            throw error;
+        }
+    }
+
+    public static async getFilteredUsers(): Promise<UserDto[]>{
+        try{
+            const response = await api.get<UserDto[]>('/api/users/filtered');
+            return response.data;
+        } catch(error){
             console.error('Error fetching user data:', error);
             throw error;
         }

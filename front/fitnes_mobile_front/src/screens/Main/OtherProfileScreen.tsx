@@ -6,8 +6,9 @@ const OtherProfileScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Профиль пользователя</Text>
-      <Text>Идентификатор пользователя: {userId}</Text>
+      <Text style={styles.title}>User Profile</Text>
+      <Text style={styles.content}>User ID: {userId}</Text>
+      {/* You can expand this to fetch and display more user details */}
     </View>
   );
 };
@@ -15,13 +16,17 @@ const OtherProfileScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
-    backgroundColor: '#f5f5f5',
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
+  },
+  content: {
+    fontSize: 16,
   },
 });
 

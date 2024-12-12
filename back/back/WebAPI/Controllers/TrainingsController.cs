@@ -33,5 +33,21 @@ namespace WebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("byUser/{userId}")]
+        public async Task<IActionResult> GetByUser(long userId)
+        {
+            var result = await _trainingService.GetByUserIdAsync(userId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("byDay/{dayId}")]
+        public async Task<IActionResult> GetByDay(long dayId)
+        {
+            var result = await _trainingService.GetByDayAsync(dayId);
+
+            return Ok(result);
+        }
     }
 }

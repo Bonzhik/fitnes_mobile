@@ -12,6 +12,7 @@ namespace Business.Services.Interfaces
     public interface ITrainingService
     {
         Task<ICollection<TrainingR>> GetByUserIdAsync(long userId);
+        Task<ICollection<TrainingR>> GetByDayAsync(long dayId);
         Task<TrainingR> GetByIdAsync(long id);
         Task<bool> CreateTrainingAsync(TrainingW trainingW, long userId);
     }

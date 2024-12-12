@@ -32,32 +32,10 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("planners")]
-        public async Task<IActionResult> GetPlanner()
+        [HttpGet("filtered")]
+        public async Task<IActionResult> GetFiltered()
         {
-            long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
-
-            var result = await _plannerService.GetByUserIdAsync(userId);
-
-            return Ok(result);
-        }
-
-        [HttpGet("trainings")]
-        public async Task<IActionResult> GetTrainings()
-        {
-            long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
-
-            var result = await _trainingService.GetByUserIdAsync(userId);
-
-            return Ok(result);
-        }
-
-        [HttpGet("comments")]
-        public async Task<IActionResult> GetComments()
-        {
-            long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
-
-            var result = await _profileCommentService.GetByUserIdAsync(userId);
+            var result = await _userService.GetFiltered();
 
             return Ok(result);
         }

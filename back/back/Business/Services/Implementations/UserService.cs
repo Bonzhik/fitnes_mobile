@@ -37,6 +37,34 @@ namespace Business.Services.Implementations
             return await _userRepository.AddAsync(user);
         }
 
+        public async Task<ICollection<UserR>> GetFiltered()
+        {
+            var users = _userRepository.GetAllAsync();
+
+            List<UserR> filtered = [];
+
+            foreach (var user in users)
+            {
+                var category = await _userCategoryRepository.GetByUser(user.Id);
+
+                filtered.Add(new UserR
+                {
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Height = user.Height,
+                    Weigth = user.Weigth,
+                    CategoryR = new UserCategoryR
+                    {
+                        Id = category.Id,
+                        CategoryName = category.CategoryName
+                    }
+                });
+            }
+
+            return filtered;
+        }
+
         public async Task<UserR> GetUserByIdAsync(long userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);

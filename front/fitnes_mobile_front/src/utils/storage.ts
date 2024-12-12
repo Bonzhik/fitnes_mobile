@@ -49,3 +49,30 @@ export const removeAccessToken = async () => {
         console.error('Error in removing access-token', error);
     }
 };
+
+export const saveUserId = async (userId: Number) => {
+    try {
+        await EncryptedStorage.setItem('userId', userId.toString());
+    } catch (error) {
+        console.error('Error in saving userId', error);
+    }
+};
+
+export const getUserId = async (): Promise<Number | null> => {
+    try {
+        const userId = await EncryptedStorage.getItem('userId');
+        return userId ? Number(userId) : null;
+    } catch (error) {
+        console.error('Error in getting userId', error);
+        return null;
+    }
+};
+
+export const removeUserId  = async () => {
+    try {
+        await EncryptedStorage.removeItem('userId');
+    } catch (error) {
+        console.error('Error in removing userId', error);
+    }
+};
+

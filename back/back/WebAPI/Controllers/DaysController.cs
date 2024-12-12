@@ -28,16 +28,6 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("byUser")]
-        public async Task<IActionResult> GetDaysByUser()
-        {
-            long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
-
-            var result = await _dayService.GetByPlannerIdAsync(userId);
-
-            return Ok(result);
-        }
-
         [HttpGet("byUser/{userId}")]
         public async Task<IActionResult> GetDaysByUser(long userId)
         {

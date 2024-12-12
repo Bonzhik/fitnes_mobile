@@ -1,25 +1,7 @@
-export interface LoginDto {
-    email: string;
-    password: string;
-}
-
-export interface RegisterDto {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    height: number;
-    weight: number;
-    categoryId: number;
-}
-
-export interface AuthResponseDto {
-    accessToken: string;
-    refreshToken: string;
-}
-
 import api from './apiClient';
 import { saveRefreshToken, saveAccessToken } from '../utils/storage';
+import { LoginDto, RegisterDto, AuthResponseDto } from '../dtos/dtos';
+import { UserService } from './userService';
 
 export class AuthService {
     public static async login(loginDto: LoginDto): Promise<AuthResponseDto> {
@@ -29,6 +11,8 @@ export class AuthService {
 
             await saveAccessToken(accessToken);
             await saveRefreshToken(refreshToken);
+
+            await UserService.getCurrentUser();
 
             return response.data;
         } catch (error) {
