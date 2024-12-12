@@ -9,10 +9,11 @@ import {
   TextInput,
 } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
-import { ProductR, DayR, TrainingR } from '../../dtos/dtos';
+import { ProductR, DayR, TrainingR, ProfileCommentR } from '../../dtos/dtos';
 import { ProductService } from '../../api/productService';
 import { DayService } from '../../api/dayService';
 import { TrainingService } from '../../api/trainingService';
+import { ProfileCommentService } from '../../api/profileCommentService';
 import { getUserId } from '../../utils/storage';
 
 const DiaryScreen = () => {
@@ -21,6 +22,7 @@ const DiaryScreen = () => {
   const [days, setDays] = useState<DayR[]>([]);
   const [products, setProducts] = useState<ProductR[]>([]);
   const [trainings, setTrainings] = useState<TrainingR[]>([]);
+  const [comments, setComments] = useState<ProfileCommentR[]>([]); // State for comments
   const [macros, setMacros] = useState({
     protein: 0,
     fats: 0,
@@ -35,6 +37,10 @@ const DiaryScreen = () => {
       setUserId(id);
       const userDays = await DayService.getDaysByUser(id);
       setDays(userDays);
+
+      // Fetch user comments
+      const userComments = await ProfileCommentService.getComments(id);
+      setComments(userComments);
     })();
   }, []);
 
@@ -135,6 +141,18 @@ const DiaryScreen = () => {
         renderItem={({ item }) => (
           <View style={styles.listItem}>
             <Text>Training created by: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+          </View>
+        )}
+      />
+
+      {/* Comments */}
+      <Text style={styles.sectionTitle}>Profile Comments</Text>
+      <FlatList
+        data={comments}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.listItem}>
+            <Text>{item.user.lastName} {item.user.firstName}: {item.text}</Text>
           </View>
         )}
       />
