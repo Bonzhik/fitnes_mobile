@@ -8,8 +8,8 @@ export class ProfileCommentService {
      * @param profileCommentW Data for the new comment.
      * @returns Created comment details.
      */
-    public static async createProfileComment(profileCommentW: ProfileCommentW): Promise<ProfileCommentR> {
-        const response = await api.post<ProfileCommentR>('/api/profileComments', profileCommentW);
+    public static async createProfileComment(profileCommentW: ProfileCommentW): Promise<boolean> {
+        const response = await api.post<boolean>('/api/profileComments', profileCommentW);
         return response.data;
     }
 

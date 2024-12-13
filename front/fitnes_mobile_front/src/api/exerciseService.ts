@@ -21,4 +21,14 @@ export class ExerciseService {
         const response = await api.get<ExerciseR[]>(`/api/exercises/byTraining/${trainingId}`);
         return response.data;
     }
+
+    public static async getExercises(): Promise<ExerciseR[]> {
+        const response = await api.get<ExerciseR[]>(`/api/exercises`);
+        return response.data;
+    }
+
+    public static async getExercisesByName(text: string): Promise<ExerciseR[]> {
+        const response = await api.get<ExerciseR[]>(`/api/exercises`);
+        return response.data;
+    }
 }

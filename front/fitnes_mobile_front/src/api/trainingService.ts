@@ -22,18 +22,28 @@ export class TrainingService {
         return response.data;
     }
 
-        /**
+    /**
      * Fetch trainings by day ID.
      * @param dayId Day ID.
      * @returns Trainings for the specified day.
      */
-        public static async getTrainingsByDay(dayId: Number): Promise<TrainingR[]> {
-            const response = await api.get<TrainingR[]>(`/api/trainings/byDay/${dayId}`);
-            return response.data;
-        }
+    public static async getTrainingsByDay(dayId: Number): Promise<TrainingR[]> {
+        const response = await api.get<TrainingR[]>(`/api/trainings/byDay/${dayId}`);
+        return response.data;
+    }
 
-        public static async getTrainingsByUser(userId: number): Promise<TrainingR[]>{
-            const response = await api.get<TrainingR[]>(`/api/trainings/byUser/${userId}`);
-            return response.data;
-        }
+    public static async getTrainingsByUser(userId: number): Promise<TrainingR[]> {
+        const response = await api.get<TrainingR[]>(`/api/trainings/byUser/${userId}`);
+        return response.data;
+    }
+
+    public static async getTrainings(): Promise<TrainingR[]> {
+        const response = await api.get<TrainingR[]>(`/api/trainings`);
+        return response.data;
+    }
+
+    public static async getTrainingsByName(text: string): Promise<TrainingR[]> {
+        const response = await api.get<TrainingR[]>(`/api/trainings`);
+        return response.data;
+    }
 }

@@ -33,6 +33,7 @@ export interface TrainingW {
 
 export interface TrainingR {
     id: number;
+    name: string;
     createdBy: UserDto;
 }
 

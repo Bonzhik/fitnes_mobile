@@ -21,6 +21,16 @@ export class ProductService {
         return response.data;
     }
 
+    public static async getProducts(): Promise<ProductR[]> {
+        const response = await api.get<ProductR[]>(`/api/products`);
+        return response.data;
+    }
+
+    public static async getProductsByName(text: string): Promise<ProductR[]> {
+        const response = await api.get<ProductR[]>(`/api/products`);
+        return response.data;
+    }
+
     /**
      * Create a new product.
      * @param productR Data for the new product.
