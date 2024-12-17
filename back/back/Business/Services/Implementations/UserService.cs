@@ -39,7 +39,8 @@ namespace Business.Services.Implementations
 
         public async Task<ICollection<UserR>> GetFiltered()
         {
-            var users = _userRepository.GetAllAsync();
+            var test = _userRepository.GetAllAsync();
+            var users = test.ToList();
 
             List<UserR> filtered = [];
 
@@ -49,6 +50,7 @@ namespace Business.Services.Implementations
 
                 filtered.Add(new UserR
                 {
+                    Id = user.Id,
                     Email = user.Email,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -78,6 +80,7 @@ namespace Business.Services.Implementations
 
             var result = new UserR
             {
+                Id = user.Id,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
