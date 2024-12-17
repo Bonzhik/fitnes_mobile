@@ -15,5 +15,6 @@ namespace Business.Services.Interfaces
         Task<ICollection<TrainingR>> GetByDayAsync(long dayId);
         Task<TrainingR> GetByIdAsync(long id);
         Task<bool> CreateTrainingAsync(TrainingW trainingW, long userId);
+        Task<ICollection<TrainingR>> GetAllAsync();
     }
 }

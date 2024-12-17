@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { View, Text, TextInput, Button, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Formik } from 'formik';
 import { DayService } from '../api/dayService';
 import { ProductService } from '../api/productService';
@@ -8,7 +7,11 @@ import { TrainingService } from '../api/trainingService';
 import { DayW } from '../dtos/dtos';
 import { ProductR, TrainingR } from '../dtos/dtos';
 
-const CreateDayForm = () => {
+interface CreateDayFormProps {
+  selectedDate: string; // Pass selected date as prop
+}
+
+const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
   const [products, setProducts] = useState<ProductR[]>([]);
   const [trainings, setTrainings] = useState<TrainingR[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductR[]>([]);
@@ -37,26 +40,23 @@ const CreateDayForm = () => {
 
   const handleTrainingSearch = (text: string) => {
     const filtered = trainings.filter(training =>
-      training.name.toLowerCase().includes(text.toLowerCase())
+      training.id.toString().includes(text.toLowerCase())
     );
     setFilteredTrainings(filtered);
   };
 
-  const toggleProductSelection = (id: number) => {
-    setSelectedProductIds(prev =>
-      prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
-    );
+  const addProduct = (id: number) => {
+    setSelectedProductIds(prev => [...prev, id]);
   };
 
-  const toggleTrainingSelection = (id: number) => {
-    setSelectedTrainingIds(prev =>
-      prev.includes(id) ? prev.filter(tid => tid !== id) : [...prev, id]
-    );
+  const addTraining = (id: number) => {
+    setSelectedTrainingIds(prev => [...prev, id]);
   };
 
   return (
     <Formik
-      initialValues={{ dayDate: '', productIds: [], trainingIds: [] }}
+      initialValues={{ dayDate: selectedDate, productIds: [], trainingIds: [] }}
+      enableReinitialize
       onSubmit={async (values, { resetForm }) => {
         try {
           const newDay: DayW = {
@@ -66,6 +66,8 @@ const CreateDayForm = () => {
           };
           await DayService.createDay(newDay);
           resetForm();
+          setSelectedProductIds([]);
+          setSelectedTrainingIds([]);
         } catch (error) {
           console.error(error);
         }
@@ -73,13 +75,10 @@ const CreateDayForm = () => {
     >
       {({ handleChange, handleSubmit, values }) => (
         <ScrollView style={styles.container}>
-          <Text style={styles.label}>Date (ISO format):</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleChange('dayDate')}
-            value={values.dayDate}
-            placeholder="YYYY-MM-DD"
-          />
+          <View style={styles.dateContainer}>
+            <Text style={styles.label}>Selected Date:</Text>
+            <Text style={styles.dateText}>{selectedDate}</Text>
+          </View>
 
           <Text style={styles.label}>Search Products:</Text>
           <TextInput
@@ -90,11 +89,20 @@ const CreateDayForm = () => {
           {filteredProducts.map(product => (
             <View key={product.id} style={styles.itemContainer}>
               <Text>{product.name}</Text>
-              <CheckBox
-                value={selectedProductIds.includes(product.id)}
-                onValueChange={() => toggleProductSelection(product.id)}
-              />
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => addProduct(product.id)}
+              >
+                <Text style={styles.addButtonText}>Add</Text>
+              </TouchableOpacity>
             </View>
+          ))}
+
+          <Text style={styles.label}>Selected Products:</Text>
+          {selectedProductIds.map((id, index) => (
+            <Text key={index} style={styles.selectedItem}>
+              Product ID: {id}
+            </Text>
           ))}
 
           <Text style={styles.label}>Search Trainings:</Text>
@@ -105,12 +113,21 @@ const CreateDayForm = () => {
           />
           {filteredTrainings.map(training => (
             <View key={training.id} style={styles.itemContainer}>
-              <Text>{training.name}</Text>
-              <CheckBox
-                value={selectedTrainingIds.includes(training.id)}
-                onValueChange={() => toggleTrainingSelection(training.id)}
-              />
+              <Text>Training ID: {training.id}</Text>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => addTraining(training.id)}
+              >
+                <Text style={styles.addButtonText}>Add</Text>
+              </TouchableOpacity>
             </View>
+          ))}
+
+          <Text style={styles.label}>Selected Trainings:</Text>
+          {selectedTrainingIds.map((id, index) => (
+            <Text key={index} style={styles.selectedItem}>
+              Training ID: {id}
+            </Text>
           ))}
 
           <Button title="Submit" onPress={handleSubmit} />
@@ -141,6 +158,33 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
+  },
+  addButton: {
+    backgroundColor: '#007BFF',
+    padding: 8,
+    borderRadius: 4,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  selectedItem: {
+    fontSize: 14,
+    padding: 4,
+    backgroundColor: '#F0F0F0',
+    marginBottom: 4,
+    borderRadius: 4,
+  },
+  dateContainer: {
+    marginBottom: 16,
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#333',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 4,
   },
 });
 

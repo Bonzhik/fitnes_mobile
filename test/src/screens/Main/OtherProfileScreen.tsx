@@ -6,6 +6,7 @@ import { ProductService } from '../../api/productService';
 import { TrainingService } from '../../api/trainingService';
 import { ProfileCommentService } from '../../api/profileCommentService';
 import { DayR, ProductR, TrainingR, ProfileCommentR } from '../../dtos/dtos';
+import ProfileCommentForm from '../../components/ProfileCommentForm';
 
 const OtherProfileScreen = ({ route }) => {
   const { userId } = route.params;
@@ -132,6 +133,8 @@ const OtherProfileScreen = ({ route }) => {
         )}
       />
 
+      <ProfileCommentForm commentTo={userId}/>
+
       {/* Comments */}
       <Text style={styles.sectionTitle}>Profile Comments</Text>
       <FlatList
@@ -139,7 +142,7 @@ const OtherProfileScreen = ({ route }) => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.listItem}>
-            <Text>{item.user.firstName} {item.user.lastName}: {item.text}</Text>
+            <Text>{item.userR.firstName} {item.userR.lastName}: {item.text}</Text>
           </View>
         )}
       />

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Business.Services.Implementations
 {
@@ -49,7 +50,8 @@ namespace Business.Services.Implementations
 
         public async Task<ICollection<TrainingR>> GetByDayAsync(long dayId)
         {
-            var trainings = _trainingRepository.GetByDayId(dayId);
+            var test = _trainingRepository.GetByDayId(dayId);
+            var trainings = test.ToList();
 
             List<TrainingR> trainingsDto = [];
 
@@ -80,7 +82,27 @@ namespace Business.Services.Implementations
 
         public async Task<ICollection<TrainingR>> GetByUserIdAsync(long userId)
         {
-            var trainings = _trainingRepository.GetByUserId(userId);
+            var test = _trainingRepository.GetByUserId(userId);
+            var trainings = test.ToList();
+
+            List<TrainingR> trainingsDto = [];
+
+            foreach (var training in trainings)
+            {
+                trainingsDto.Add(new TrainingR
+                {
+                    Id = training.Id,
+                    CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
+                });
+            }
+
+            return trainingsDto;
+        }
+
+        public async Task<ICollection<TrainingR>> GetAllAsync()
+        {
+            var test = _trainingRepository.GetAllAsync();
+            var trainings = test.ToList();
 
             List<TrainingR> trainingsDto = [];
 

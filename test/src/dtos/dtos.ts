@@ -23,7 +23,7 @@ export interface ProfileCommentW {
 export interface ProfileCommentR {
     id: number;
     text: string;
-    user: UserDto;
+    userR: UserDto;
 }
 
 export interface TrainingW {
@@ -33,7 +33,6 @@ export interface TrainingW {
 
 export interface TrainingR {
     id: number;
-    name: string;
     createdBy: UserDto;
 }
 
@@ -88,7 +87,7 @@ export interface UserDto {
     lastName: string;
     height: number;
     weight: number;
-    category: UserCategoryDto;
+    categoryR: UserCategoryDto;
 }
 
 export interface ProductR{

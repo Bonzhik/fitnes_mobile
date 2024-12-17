@@ -17,7 +17,7 @@ namespace DAL.Repositories.Implementations
 
         public IQueryable<ProfileComments> GetByUserId(long userId)
         {
-            return _db.ProfileComments.Where(c => c.CommentBy.Id == userId);
+            return _db.ProfileComments.Where(c => c.CommentTo.Id == userId);
         }
     }
 }

@@ -33,7 +33,8 @@ namespace Business.Services.Implementations
 
         public async Task<ICollection<ProfileCommentR>> GetByUserIdAsync(long userId)
         {
-            var profileComments = _profileCommentRepository.GetByUserId(userId);
+            var test = _profileCommentRepository.GetByUserId(userId);
+            var profileComments = test.ToList();
 
             List<ProfileCommentR> commentsDto = [];
 

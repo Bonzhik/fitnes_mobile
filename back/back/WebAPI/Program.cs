@@ -27,7 +27,9 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options
+        .UseLazyLoadingProxies()
+        .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -42,9 +44,12 @@ builder.Services.AddScoped<ITrainingCommentRepositry, TrainingCommentRepository>
 builder.Services.AddScoped<ITrainingRepository, TrainingRepository>();  
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITrainingService, TrainingService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IExerciseService, ExerciseService>();
 builder.Services.AddScoped<IProfileCommentService, ProfileCommentService>();
 builder.Services.AddScoped<IPlannerService, PlannerService>();
 builder.Services.AddScoped<IAuthService,  AuthService>();
+builder.Services.AddScoped<IDayService, DayService>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

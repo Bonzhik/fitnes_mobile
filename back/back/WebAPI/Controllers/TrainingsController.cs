@@ -49,5 +49,13 @@ namespace WebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _trainingService.GetAllAsync();
+
+            return Ok(result);
+        }
     }
 }
