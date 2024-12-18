@@ -21,5 +21,21 @@ namespace WebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> GetByName([FromQuery]string name)
+        {
+            var result = await _exerciseService.GetByName(name);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _exerciseService.GetAll();
+
+            return Ok(result);
+        }
     }
 }

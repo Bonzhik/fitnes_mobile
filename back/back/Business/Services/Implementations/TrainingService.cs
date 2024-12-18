@@ -117,5 +117,35 @@ namespace Business.Services.Implementations
 
             return trainingsDto;
         }
+
+        public async Task<ICollection<TrainingR>> GetByNameAsync(string name)
+        {
+            var test = _trainingRepository.GetByName(name);
+            var trainings = test.ToList();
+
+            List<TrainingR> trainingsDto = [];
+
+            foreach (var training in trainings)
+            {
+                trainingsDto.Add(new TrainingR
+                {
+                    Id = training.Id,
+                    CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
+                });
+            }
+
+            return trainingsDto;
+        }
+
+        public async Task<bool> AppendToUser(long userId, long trainingId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            var training = await _trainingRepository.GetByIdAsync(trainingId);
+
+            user.Trainings.Add(training);
+
+            return await _userRepository.SaveAsync();
+        }
     }
 }

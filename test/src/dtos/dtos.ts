@@ -33,6 +33,8 @@ export interface TrainingW {
 
 export interface TrainingR {
     id: number;
+    name: string;
+    description: string;
     createdBy: UserDto;
 }
 
@@ -46,7 +48,7 @@ export interface UserDto {
     firstName: string;
     lastName: string;
     height: number;
-    weight: number;
+    weigth: number;
     category: UserCategoryDto;
 }
 

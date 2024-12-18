@@ -12,5 +12,7 @@ namespace Business.Services.Interfaces
     {
         Task<ICollection<ExerciseR>> GetByTrainingIdAsync(long trainingId);
         Task<ExerciseR> GetByIdAsync(long id);
+        Task<ICollection<ExerciseR>> GetByName(string name);
+        Task<ICollection<ExerciseR>> GetAll();
     }
 }

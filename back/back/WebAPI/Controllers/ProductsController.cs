@@ -29,5 +29,13 @@ namespace WebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> GetByName([FromQuery] string name)
+        {
+            var result = await _productService.GetByNameAsync(name);
+
+            return Ok(result);
+        }
     }
 }

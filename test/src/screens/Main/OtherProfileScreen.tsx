@@ -7,6 +7,8 @@ import { TrainingService } from '../../api/trainingService';
 import { ProfileCommentService } from '../../api/profileCommentService';
 import { DayR, ProductR, TrainingR, ProfileCommentR } from '../../dtos/dtos';
 import ProfileCommentForm from '../../components/ProfileCommentForm';
+import { date } from 'yup';
+import { Calendar } from 'react-native-calendars';
 
 const OtherProfileScreen = ({ route }) => {
   const { userId } = route.params;
@@ -27,8 +29,17 @@ const OtherProfileScreen = ({ route }) => {
     (async () => {
       const userDays = await DayService.getDaysByUser(userId);
       setDays(userDays);
+
       const userComments = await ProfileCommentService.getComments(userId);
       setComments(userComments);
+
+      const today = new Date().toISOString().split('T')[0]; // Формат YYYY-MM-DD
+      setCurrentDay(today);
+
+      const todayDay = userDays.find((d) => d.dayDate.split('T')[0] === today);
+      if (todayDay) {
+        fetchDayDetails(today);
+      }
     })();
   }, []);
 
@@ -61,27 +72,25 @@ const OtherProfileScreen = ({ route }) => {
     }
   };
 
-  const handleDateInput = () => {
-    if (inputDate) {
-      setCurrentDay(inputDate);
-      fetchDayDetails(inputDate);
-    }
+  const handleDateInput = (selectedDate: string) => {
+      setCurrentDay(selectedDate);
+      fetchDayDetails(selectedDate);
   };
 
   return (
     <ScrollView style={styles.container}>
       {/* Date Input */}
-      <View style={styles.dateSwitcher}>
-        <TextInput
-          style={styles.dateInput}
-          placeholder="YYYY-MM-DD"
-          value={inputDate}
-          onChangeText={setInputDate}
-        />
-        <Button title="Go" onPress={handleDateInput} />
+      <Calendar
+        markedDates={{
+          [currentDay || '']: { selected: true, selectedColor: 'blue' }, // Highlight the selected date
+        }}
+        onDayPress={(day) => {console.log('Day pressed'); handleDateInput(day.dateString);}}
+      />
+
+      <View style={styles.dateContainer}>
+        <Text style={styles.dateText}>{currentDay || 'Select a date'}</Text>
       </View>
 
-      <Text style={styles.dateText}>{currentDay || 'Select a date'}</Text>
 
       {/* Macros and Calories */}
       <View style={styles.chartContainer}>
@@ -155,24 +164,17 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  dateSwitcher: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 16,
-  },
-  dateInput: {
+  input: {
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 8,
-    flex: 1,
-    marginRight: 8,
+    marginBottom: 16,
+    borderRadius: 4,
   },
-  dateText: {
-    fontSize: 18,
+  label: {
+    fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 8,
+    marginBottom: 8,
   },
   chartContainer: {
     alignItems: 'center',
@@ -195,6 +197,20 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  dateContainer: {
+    alignItems: 'center', // Горизонтальное центрирование
+    justifyContent: 'center', // Вертикальное центрирование
+    marginBottom: 16,
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#333',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 4,
+    textAlign: 'center', // Центрирование текста внутри элемента
   },
 });
 

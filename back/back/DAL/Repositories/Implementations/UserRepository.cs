@@ -25,5 +25,27 @@ namespace DAL.Repositories.Implementations
         {
             return await _db.Users.SingleOrDefaultAsync(x => x.RefreshToken == refreshToken);
         }
+
+        public IQueryable<User> GetFiltered(float deltaX, float weight, float height, UserCategory? category, long userId)
+        {
+            if (category == null)
+            {
+                return _db.Users.Where(u => u.Weigth > weight - deltaX && u.Weigth < weight + deltaX
+                                            &&
+                                            u.Height > height - deltaX && u.Height < height + deltaX
+                                            &&
+                                            u.Id != userId);
+            }
+            else
+            {
+                return _db.Users.Where(u => u.UserCategory.Id == category.Id
+                                            &&
+                                            u.Weigth > weight - deltaX && u.Weigth < weight + deltaX
+                                            &&
+                                            u.Height > height - deltaX && u.Height < height + deltaX
+                                            &&
+                                            u.Id != userId);
+            }
+        }
     }
 }

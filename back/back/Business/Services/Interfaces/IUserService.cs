@@ -11,7 +11,7 @@ namespace Business.Services.Interfaces
     public interface IUserService
     {
         Task<bool> CreateUserAsync(RegisterDto registerDto);
-        Task<ICollection<UserR>> GetFiltered();
+        Task<ICollection<UserR>> GetFiltered(long userId);
         Task<UserR> GetUserByIdAsync(long userId);
     }
 }

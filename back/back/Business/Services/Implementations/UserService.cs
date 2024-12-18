@@ -5,6 +5,7 @@ using DAL.Repositories.Interfaces;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,17 +38,33 @@ namespace Business.Services.Implementations
             return await _userRepository.AddAsync(user);
         }
 
-        public async Task<ICollection<UserR>> GetFiltered()
+        public async Task<ICollection<UserR>> GetFiltered(long userId)
         {
-            var test = _userRepository.GetAllAsync();
-            var users = test.ToList();
+            const int GOAL_COUNT = 10;
+            var DELTA_X = 5f;
 
-            List<UserR> filtered = [];
+            var result = new List<User>();
 
-            foreach (var user in users)
+            var currentUser = await _userRepository.GetByIdAsync(userId);
+
+            while (result.Count < GOAL_COUNT && DELTA_X < 20f)
             {
-                var category = await _userCategoryRepository.GetByUser(user.Id);
+                DELTA_X += 5f;
+                var currentUsers = _userRepository.GetFiltered(DELTA_X, currentUser.Weigth, currentUser.Height, DELTA_X >= 10 ? null : currentUser.UserCategory, userId).ToList();
 
+                foreach(var user in currentUsers)
+                {
+                    if (!result.Any(u => u.Id == user.Id))
+                    {
+                        result.Add(user);
+                    }
+                }
+            }
+
+            var filtered = new List<UserR>();   
+
+            foreach (var user in result)
+            {
                 filtered.Add(new UserR
                 {
                     Id = user.Id,
@@ -58,8 +75,8 @@ namespace Business.Services.Implementations
                     Weigth = user.Weigth,
                     CategoryR = new UserCategoryR
                     {
-                        Id = category.Id,
-                        CategoryName = category.CategoryName
+                        Id = user.UserCategory.Id,
+                        CategoryName = user.UserCategory.CategoryName
                     }
                 });
             }

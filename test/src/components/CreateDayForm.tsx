@@ -31,17 +31,13 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
     fetchData();
   }, []);
 
-  const handleProductSearch = (text: string) => {
-    const filtered = products.filter(product =>
-      product.name.toLowerCase().includes(text.toLowerCase())
-    );
+  const handleProductSearch = async (text: string) => {
+    const filtered = await ProductService.getProductsByName(text);
     setFilteredProducts(filtered);
   };
 
-  const handleTrainingSearch = (text: string) => {
-    const filtered = trainings.filter(training =>
-      training.id.toString().includes(text.toLowerCase())
-    );
+  const handleTrainingSearch = async (text: string) => {
+    const filtered = await TrainingService.getTrainingsByName(text);
     setFilteredTrainings(filtered);
   };
 

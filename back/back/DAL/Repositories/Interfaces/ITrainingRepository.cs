@@ -11,5 +11,7 @@ namespace DAL.Repositories.Interfaces
     {
         IQueryable<Training> GetByUserId(long userId);
         IQueryable<Training> GetByDayId(long dayId);
+        IQueryable<Training> GetByName(string name);
+
     }
 }

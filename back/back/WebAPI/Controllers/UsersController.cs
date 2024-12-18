@@ -35,7 +35,9 @@ namespace WebAPI.Controllers
         [HttpGet("filtered")]
         public async Task<IActionResult> GetFiltered()
         {
-            var result = await _userService.GetFiltered();
+            long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
+
+            var result = await _userService.GetFiltered(userId);
 
             return Ok(result);
         }

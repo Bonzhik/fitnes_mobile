@@ -10,5 +10,6 @@ namespace DAL.Repositories.Interfaces
     public interface IProductRepository : IBaseRepository<Product>
     {
         IQueryable<Product> GetByDayId(long dayId);
+        IQueryable<Product> GetByName(string name);
     }
 }

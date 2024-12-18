@@ -20,6 +20,11 @@ namespace DAL.Repositories.Implementations
             return _db.Days.Where(d => d.Id == dayId).SelectMany(d => d.Trainings);
         }
 
+        public IQueryable<Training> GetByName(string name)
+        {
+            return _db.Trainings.Where(t => t.Name.Contains(name));
+        }
+
         public IQueryable<Training> GetByUserId(long userId)
         {
             return _db.Users.Where(u => u.Id == userId).SelectMany(u => u.Trainings);

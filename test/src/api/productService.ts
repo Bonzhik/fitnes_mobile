@@ -27,7 +27,9 @@ export class ProductService {
     }
 
     public static async getProductsByName(text: string): Promise<ProductR[]> {
-        const response = await api.get<ProductR[]>(`/products`);
+        const response = await api.get<ProductR[]>(`/products/search`, {params: {
+            name: text
+        }});
         return response.data;
     }
 

@@ -42,8 +42,18 @@ export class TrainingService {
         return response.data;
     }
 
+    public static async AppendToUser(trainingId : number): Promise<Boolean>{
+        const response = await api.patch<Boolean>(`/appendToUser`, {params: {
+            trainingId : trainingId
+        }})
+
+        return response.data;
+    }
+
     public static async getTrainingsByName(text: string): Promise<TrainingR[]> {
-        const response = await api.get<TrainingR[]>(`/trainings`);
+        const response = await api.get<TrainingR[]>(`/trainings/search`, {params: {
+            name : text
+        }});
         return response.data;
     }
 }

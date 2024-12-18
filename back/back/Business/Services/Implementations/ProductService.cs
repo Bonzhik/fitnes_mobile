@@ -61,5 +61,27 @@ namespace Business.Services.Implementations
 
             return productDtos;
         }
+
+        public async Task<ICollection<ProductR>> GetByNameAsync(string name)
+        {
+            var products = _productRepository.GetByName(name);
+
+            List<ProductR> productDtos = [];
+
+            foreach (var product in products)
+            {
+                productDtos.Add(new ProductR
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Proteins = product.Proteins,
+                    Fats = product.Fats,
+                    Carbohydrates = product.Carbohydrates,
+                    Kcals = product.Kcals,
+                });
+            }
+
+            return productDtos;
+        }
     }
 }

@@ -50,6 +50,14 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetByName([FromQuery] string name)
+        {
+            var result = await _trainingService.GetByNameAsync(name);
+
+            return Ok(result);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -57,5 +65,17 @@ namespace WebAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpPatch("appendToUser")]
+        public async Task<IActionResult> AppendToUser([FromQuery] long trainingId)
+        {
+            long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out long userId);
+
+            var result = await _trainingService.AppendToUser(userId, trainingId);
+
+            return Ok(result);
+        }
+
+
     }
 }

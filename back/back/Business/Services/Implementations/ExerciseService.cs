@@ -16,6 +16,26 @@ namespace Business.Services.Implementations
         {
             _exerciseRepository = exerciseRepository;
         }
+
+        public async Task<ICollection<ExerciseR>> GetAll()
+        {
+            var exercises = _exerciseRepository.GetAllAsync();
+
+            List<ExerciseR> exercisesDtos = [];
+
+            foreach (var exercise in exercises)
+            {
+                exercisesDtos.Add(new ExerciseR
+                {
+                    Id = exercise.Id,
+                    Name = exercise.Name,
+                    Description = exercise.Description,
+                });
+            }
+
+            return exercisesDtos;
+        }
+
         public async Task<ExerciseR> GetByIdAsync(long id)
         {
             var exercise = await _exerciseRepository.GetByIdAsync(id);
@@ -28,6 +48,25 @@ namespace Business.Services.Implementations
             };
 
             return exerciseDto;
+        }
+
+        public async Task<ICollection<ExerciseR>> GetByName(string name)
+        {
+            var exercises = _exerciseRepository.GeyByName(name);
+
+            List<ExerciseR> exercisesDtos = [];
+
+            foreach (var exercise in exercises)
+            {
+                exercisesDtos.Add(new ExerciseR
+                {
+                    Id = exercise.Id,
+                    Name = exercise.Name,
+                    Description = exercise.Description,
+                });
+            }
+
+            return exercisesDtos;
         }
 
         public async Task<ICollection<ExerciseR>> GetByTrainingIdAsync(long trainingId)

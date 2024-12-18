@@ -12,5 +12,6 @@ namespace Business.Services.Interfaces
     {
         Task<ICollection<ProductR>> GetByDayIdAsync(long dayId);
         Task<ICollection<ProductR>> GetAllAsync();
+        Task<ICollection<ProductR>> GetByNameAsync(string name);
     }
 }

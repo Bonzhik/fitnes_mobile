@@ -19,5 +19,10 @@ namespace DAL.Repositories.Implementations
         {
             return _db.Trainings.Where(t => t.Id == trainingId).SelectMany(e => e.Exercises);
         }
+
+        public IQueryable<Exercise> GeyByName(string name)
+        {
+            return _db.Exercises.Where(t => t.Name.Contains(name));
+        }
     }
 }

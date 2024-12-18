@@ -19,5 +19,10 @@ namespace DAL.Repositories.Implementations
         {
             return _db.Days.Where(d => d.Id == dayId).SelectMany(d => d.Products);
         }
+
+        public IQueryable<Product> GetByName(string name)
+        {
+            return _db.Products.Where(p => p.Name.Contains(name));
+        }
     }
 }

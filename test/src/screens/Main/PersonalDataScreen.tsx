@@ -44,7 +44,7 @@ const PersonalDataScreen = () => {
             <Text style={styles.label}>Имя: {user.firstName} {user.lastName}</Text>
             <Text style={styles.label}>Email: {user.email}</Text>
             <Text style={styles.label}>Рост: {user.height} см</Text>
-            <Text style={styles.label}>Вес: {user.weight} кг</Text>
+            <Text style={styles.label}>Вес: {user.weigth} кг</Text>
             <Text style={styles.label}>Категория: {user.categoryR.categoryName}</Text>
         </View>
     );
