@@ -30,6 +30,11 @@ namespace Business.Services.Implementations
 
         public async Task<bool> CreateDayAsync(DayW dayW, long userId)
         {
+            if(await _daysRepository.IsExistsByDay(dayW.DayDate, userId))
+            {
+                return false;
+            }
+
             List<Training> trainings = [];
             List<Product> products = [];
 

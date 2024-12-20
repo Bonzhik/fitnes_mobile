@@ -10,5 +10,6 @@ namespace DAL.Repositories.Interfaces
     public interface IProfileCommentRepository : IBaseRepository<ProfileComments>
     {
         IQueryable<ProfileComments> GetByUserId(long userId);
+        Task<bool> IsExistsByUser(long commentTo, long commentBy);
     }
 }

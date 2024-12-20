@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { TrainingService } from "../api/trainingService";
-import { ExerciseService } from "../api/exerciseService";
-import { TrainingR } from "../dtos/dtos";
-import { ExerciseR } from "../dtos/dtos";
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Button, Alert } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import { TrainingService } from '../api/trainingService';
+import { ExerciseService } from '../api/exerciseService';
+import { ExerciseR, TrainingR } from '../dtos/dtos';
 
-const TrainingComponent = ({ trainingId }) => {
+const TrainingComponent = ({ route }) => {
+    const { trainingId } = route.params; // Получаем trainingId из params
     const [training, setTraining] = useState<TrainingR | null>(null);
     const [exercises, setExercises] = useState<ExerciseR[] | null>([]);
 
@@ -13,10 +15,11 @@ const TrainingComponent = ({ trainingId }) => {
             try {
                 const trainingData = await TrainingService.getTraining(trainingId);
                 setTraining(trainingData);
+
                 const exerciseData = await ExerciseService.getExercisesByTraining(trainingId);
                 setExercises(exerciseData);
-            } catch (err) {
-                console.error(err);
+            } catch (error) {
+                console.error(error);
             }
         };
 
@@ -25,32 +28,41 @@ const TrainingComponent = ({ trainingId }) => {
 
     const handleAppendToUser = async () => {
         try {
-            await TrainingService.AppendToUser(trainingId);
-        } catch (err) {
-            console.error(err);
+            const response = await TrainingService.AppendToUser(trainingId);
+        } catch (error) {
+            console.error(error);
         }
     };
 
     return (
-        <div>
-            <h1>Training Details</h1>
+        <View style={styles.container}>
+            <Text style={styles.title}>Training Details</Text>
             {training && (
-                <div>
-                    <h2>{training.name}</h2>
-                    <p>{training.description}</p>
-                </div>
+                <View>
+                    <Text style={styles.subtitle}>{training.name}</Text>
+                    <Text>{training.description}</Text>
+                </View>
             )}
 
-            <h2>Exercises</h2>
-            <ul>
-                {exercises?.map((exercise) => (
-                    <li key={exercise.id}>{exercise.name}</li>
-                ))}
-            </ul>
-
-            <button onClick={handleAppendToUser}>Append to User</button>
-        </div>
+            <Text style={styles.subtitle}>Exercises</Text>
+            <FlatList
+                data={exercises}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <Text style={styles.listItem}>{item.name}</Text>
+                )}
+            />
+            
+            <Button title="Add to User" onPress={handleAppendToUser} />
+        </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: { flex: 1, padding: 16 },
+    title: { fontSize: 24, fontWeight: 'bold' },
+    subtitle: { fontSize: 18, marginTop: 16 },
+    listItem: { padding: 8, borderBottomWidth: 1, borderBottomColor: '#ccc' },
+});
 
 export default TrainingComponent;

@@ -10,5 +10,6 @@ namespace DAL.Repositories.Interfaces
     public interface ITrainingCommentRepositry : IBaseRepository<TrainingComments>
     {
         IQueryable<TrainingComments> GetByTrainingId(long trainingId);
+        Task<bool> IsExistsByUser(long commentTo, long commentBy);
     }
 }

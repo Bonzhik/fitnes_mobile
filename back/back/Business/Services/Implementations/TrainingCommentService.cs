@@ -29,6 +29,11 @@ namespace Business.Services.Implementations
 
         public async Task<bool> CreateCommentAsync(TrainingCommentW trainingCommentW, long userId)
         {
+            if (await _trainingCommentRepository.IsExistsByUser(trainingCommentW.CommentTo, userId))
+            {
+                return false;
+            }
+
             var comment = new TrainingComments
             {
                 CommentBy = await _userRepository.GetByIdAsync(userId),

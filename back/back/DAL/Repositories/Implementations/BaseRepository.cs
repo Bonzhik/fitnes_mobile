@@ -44,6 +44,11 @@ namespace DAL.Repositories.Implementations
             return await _db.Set<T>().FindAsync(id);
         }
 
+        public async Task<bool> IsExists(long id)
+        {
+            return await _db.Set<T>().AnyAsync(u => u.Id == id);
+        }
+
         public async Task<bool> SaveAsync()
         {
             try

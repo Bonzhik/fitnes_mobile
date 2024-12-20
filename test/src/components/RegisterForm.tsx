@@ -31,7 +31,7 @@ const RegisterForm = () => {
             const response = await AuthService.register({
                 ...values,
                 height: Number(values.height),
-                weight: Number(values.weight),
+                weigth: Number(values.weight),
                 categoryId: Number(values.categoryId),
             });
             console.log('Registration successful:', response);

@@ -47,5 +47,10 @@ namespace DAL.Repositories.Implementations
                                             u.Id != userId);
             }
         }
+
+        public async Task<bool> IsExistsByEmai(string email)
+        {
+            return await _db.Users.AnyAsync(u => u.Email == email);
+        }
     }
 }

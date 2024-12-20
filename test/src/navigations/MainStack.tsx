@@ -4,11 +4,13 @@ import ProfilesScreen from '../screens/Main/ProfilesScreen';
 import UserTabs from '../screens/Main/UserTabs';
 import OtherProfileScreen from '../screens/Main/OtherProfileScreen';
 import { Button } from 'react-native';
+import TrainingComponent from '../components/TrainingComponent';
 
 export type MainStackParamList = {
   Profiles: undefined;
   UserTabs: undefined;
   OtherProfile: {userId: number};
+  TrainingDetails: { trainingId: number };
 };
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
@@ -46,6 +48,11 @@ const MainStack = () => {
         name="UserTabs"
         component={UserTabs}
         options={{ title: 'Мой профиль' }}
+      />
+      <Stack.Screen
+        name="TrainingDetails" // Новый экран
+        component={TrainingComponent}
+        options={{ title: 'Детали тренировки' }}
       />
     </Stack.Navigator>
   );

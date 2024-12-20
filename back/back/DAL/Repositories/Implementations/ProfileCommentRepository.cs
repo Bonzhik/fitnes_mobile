@@ -1,6 +1,7 @@
 ﻿using DAL.Context;
 using DAL.Repositories.Interfaces;
 using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,11 @@ namespace DAL.Repositories.Implementations
         public IQueryable<ProfileComments> GetByUserId(long userId)
         {
             return _db.ProfileComments.Where(c => c.CommentTo.Id == userId);
+        }
+
+        public async Task<bool> IsExistsByUser(long commentTo, long commentBy)
+        {
+            return await GetByUserId(commentTo).AnyAsync(c => c.CommentBy.Id == commentBy);
         }
     }
 }

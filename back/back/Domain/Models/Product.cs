@@ -2,6 +2,7 @@
 {
     public class Product : BaseEntity
     {
+        public string? ImageUrl { get; set; }
         public string Name { get; set; }
         public int Proteins { get; set; }
         public int Fats { get; set; }

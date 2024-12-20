@@ -68,6 +68,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+
+    var db = serviceProvider.GetRequiredService<ApplicationDbContext>();
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
 

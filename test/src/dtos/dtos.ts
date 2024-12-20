@@ -44,6 +44,7 @@ export interface PlannerR {
 
 export interface UserDto {
     id: number;
+    imageUrl: string;
     email: string;
     firstName: string;
     lastName: string;
@@ -68,7 +69,7 @@ export interface RegisterDto {
     firstName: string;
     lastName: string;
     height: number;
-    weight: number;
+    weigth: number;
     categoryId: number;
 }
 
@@ -94,6 +95,7 @@ export interface UserDto {
 
 export interface ProductR{
     id : number;
+    imageUrl: string;
     name: string;
     proteins: number;
     fats: number;

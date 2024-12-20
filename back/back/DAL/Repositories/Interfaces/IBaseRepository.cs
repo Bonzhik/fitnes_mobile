@@ -15,5 +15,6 @@ namespace DAL.Repositories.Interfaces
         Task<bool> UpdateAsync(T entity);
         Task<bool> DeleteAsync(T entity);
         Task<bool> SaveAsync();
+        Task<bool> IsExists(long id);
     }
 }

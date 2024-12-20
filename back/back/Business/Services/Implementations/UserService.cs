@@ -25,6 +25,11 @@ namespace Business.Services.Implementations
 
         public async Task<bool> CreateUserAsync(RegisterDto registerDto)
         {
+            if (await _userRepository.IsExistsByEmai(registerDto.Email))
+            {
+                return false;
+            }
+
             var user = new User()
             {
                 Email = registerDto.Email,
@@ -32,7 +37,8 @@ namespace Business.Services.Implementations
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
                 Height = registerDto.Height,
-                Weigth = registerDto.Weigth
+                Weigth = registerDto.Weigth,
+                UserCategory = await _userCategoryRepository.GetByIdAsync(registerDto.CategoryId)
             };
 
             return await _userRepository.AddAsync(user);

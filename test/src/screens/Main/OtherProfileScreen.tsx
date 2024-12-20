@@ -9,9 +9,11 @@ import { DayR, ProductR, TrainingR, ProfileCommentR } from '../../dtos/dtos';
 import ProfileCommentForm from '../../components/ProfileCommentForm';
 import { date } from 'yup';
 import { Calendar } from 'react-native-calendars';
+import { useNavigation } from '@react-navigation/native';
 
 const OtherProfileScreen = ({ route }) => {
   const { userId } = route.params;
+  const navigation = useNavigation();
   const [currentDay, setCurrentDay] = useState<string | null>(null);
   const [days, setDays] = useState<DayR[]>([]);
   const [products, setProducts] = useState<ProductR[]>([]);
@@ -44,7 +46,7 @@ const OtherProfileScreen = ({ route }) => {
   }, []);
 
   const fetchDayDetails = async (dayDate: string) => {
-    const day = days.find((d) => d.dayDate === dayDate);
+    const day = days.find((d) => d.dayDate.split('T')[0] === dayDate.split('T')[0]);
     if (day) {
       const dayProducts = await ProductService.getProductsByDay(day.id);
       const dayTrainings = await TrainingService.getTrainingsByDay(day.id);
@@ -138,6 +140,14 @@ const OtherProfileScreen = ({ route }) => {
         renderItem={({ item }) => (
           <View style={styles.listItem}>
             <Text>Training created by: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+            <Button
+              title="View Training"
+              onPress={() =>
+                navigation.navigate('TrainingDetails', {
+                  trainingId: item.id,
+                })
+              }
+            />
           </View>
         )}
       />

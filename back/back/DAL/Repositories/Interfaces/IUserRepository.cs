@@ -12,5 +12,6 @@ namespace DAL.Repositories.Interfaces
         Task<User> GetByEmailAsync(string email);
         Task<User> GetByRefreshTokenAsync(string refreshToken);
         IQueryable<User> GetFiltered(float deltaX, float weight, float height, UserCategory? category, long userId);
+        Task<bool> IsExistsByEmai(string email);
     }
 }

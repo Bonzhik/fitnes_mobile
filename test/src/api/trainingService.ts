@@ -42,11 +42,13 @@ export class TrainingService {
         return response.data;
     }
 
-    public static async AppendToUser(trainingId : number): Promise<Boolean>{
-        const response = await api.patch<Boolean>(`/appendToUser`, {params: {
-            trainingId : trainingId
-        }})
-
+    public static async AppendToUser(trainingId : number): Promise<Boolean> {
+        const response = await api.patch<Boolean>(`/trainings/appendToUser`, null, {
+            params: {
+                trainingId: trainingId.toString()
+            }
+        });
+    
         return response.data;
     }
 

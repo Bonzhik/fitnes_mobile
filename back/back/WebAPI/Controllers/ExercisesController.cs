@@ -5,11 +5,11 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ExerciseController : ControllerBase
+    public class ExercisesController : ControllerBase
     {
         private readonly IExerciseService _exerciseService;
 
-        public ExerciseController(IExerciseService exerciseService)
+        public ExercisesController(IExerciseService exerciseService)
         {
             _exerciseService = exerciseService;
         }

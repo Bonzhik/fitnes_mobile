@@ -2,6 +2,7 @@
 {
     public class User : BaseEntity
     {
+        public string? ImageUrl { get; set; }    
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public string FirstName { get; set; }
