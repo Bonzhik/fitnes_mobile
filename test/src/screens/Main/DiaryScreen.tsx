@@ -31,12 +31,16 @@ const DiaryScreen = () => {
       const today = new Date().toISOString().split('T')[0];
       setCurrentDay(today);
 
-      fetchDayDetails(today);
-
       const userComments = await ProfileCommentService.getComments(id);
       setComments(userComments);
     })();
   }, []);
+
+  useEffect(() => {
+    if (currentDay && days.length > 0) {
+      fetchDayDetails(currentDay);
+    }
+  }, [currentDay, days]);
 
   const fetchDayDetails = async (dayDate: string) => {
     const day = days.find((d) => d.dayDate.split("T")[0] === dayDate);
@@ -83,7 +87,7 @@ const DiaryScreen = () => {
         markedDates={{
           [currentDay || '']: { selected: true, selectedColor: 'blue' }, // Highlight the selected date
         }}
-        onDayPress={(day) => {console.log('Day pressed'); handleDateSelect(day.dateString);}}
+        onDayPress={(day) => { console.log('Day pressed'); handleDateSelect(day.dateString); }}
       />
 
       {showForm ? (

@@ -26,14 +26,6 @@ const TrainingComponent = ({ route }) => {
         fetchData();
     }, [trainingId]);
 
-    const handleAppendToUser = async () => {
-        try {
-            const response = await TrainingService.AppendToUser(trainingId);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Training Details</Text>
@@ -53,7 +45,6 @@ const TrainingComponent = ({ route }) => {
                 )}
             />
             
-            <Button title="Add to User" onPress={handleAppendToUser} />
         </View>
     );
 };

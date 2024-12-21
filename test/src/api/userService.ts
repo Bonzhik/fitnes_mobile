@@ -18,6 +18,16 @@ export class UserService {
         }
     }
 
+    public static async getUserById(userId : number): Promise<UserDto> {
+        try {
+            const response = await api.get<UserDto>(`/users/${userId}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            throw error;
+        }
+    }
+
     public static async getFilteredUsers(): Promise<UserDto[]>{
         try{
             const response = await api.get<UserDto[]>('/users/filtered');
@@ -27,4 +37,6 @@ export class UserService {
             throw error;
         }
     }
+
+
 }

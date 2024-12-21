@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, FlatList, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Button, FlatList, ScrollView, Image } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import { DayService } from '../../api/dayService';
 import { ProductService } from '../../api/productService';
 import { TrainingService } from '../../api/trainingService';
 import { ProfileCommentService } from '../../api/profileCommentService';
-import { DayR, ProductR, TrainingR, ProfileCommentR } from '../../dtos/dtos';
+import { DayR, ProductR, TrainingR, ProfileCommentR, UserDto } from '../../dtos/dtos';
 import ProfileCommentForm from '../../components/ProfileCommentForm';
-import { date } from 'yup';
+import { UserService } from '../../api/userService';
 import { Calendar } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
 
 const OtherProfileScreen = ({ route }) => {
   const { userId } = route.params;
+  const [user, setUser] = useState<UserDto | null>(null);
   const navigation = useNavigation();
   const [currentDay, setCurrentDay] = useState<string | null>(null);
   const [days, setDays] = useState<DayR[]>([]);
@@ -25,7 +26,6 @@ const OtherProfileScreen = ({ route }) => {
     carbs: 0,
   });
   const [calories, setCalories] = useState(0);
-  const [inputDate, setInputDate] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -35,15 +35,19 @@ const OtherProfileScreen = ({ route }) => {
       const userComments = await ProfileCommentService.getComments(userId);
       setComments(userComments);
 
+      const userResponse = await UserService.getUserById(userId);
+      setUser(userResponse);
+
       const today = new Date().toISOString().split('T')[0]; // Формат YYYY-MM-DD
       setCurrentDay(today);
-
-      const todayDay = userDays.find((d) => d.dayDate.split('T')[0] === today);
-      if (todayDay) {
-        fetchDayDetails(today);
-      }
     })();
   }, []);
+
+  useEffect(() => {
+    if (currentDay && days.length > 0) {
+      fetchDayDetails(currentDay);
+    }
+  }, [currentDay, days]);
 
   const fetchDayDetails = async (dayDate: string) => {
     const day = days.find((d) => d.dayDate.split('T')[0] === dayDate.split('T')[0]);
@@ -75,27 +79,54 @@ const OtherProfileScreen = ({ route }) => {
   };
 
   const handleDateInput = (selectedDate: string) => {
-      setCurrentDay(selectedDate);
-      fetchDayDetails(selectedDate);
+    setCurrentDay(selectedDate);
+    fetchDayDetails(selectedDate);
   };
+
+  const handleAddToUser = async (trainingId: number) => {
+    try {
+      const response = await TrainingService.AppendToUser(trainingId);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <ScrollView style={styles.container}>
-      {/* Date Input */}
-      <Calendar
-        markedDates={{
-          [currentDay || '']: { selected: true, selectedColor: 'blue' }, // Highlight the selected date
-        }}
-        onDayPress={(day) => {console.log('Day pressed'); handleDateInput(day.dateString);}}
-      />
+      {/* UserINFO */}
+      <View style={styles.componentContainer}>
+        {user && (
+          <View style={styles.userInfoContainer}>
+            <Image
+              source={user.imageUrl ? { uri: user.imageUrl } : require("../../../assets/default-image.jpg")}
+              style={styles.userImage}
+            />
 
-      <View style={styles.dateContainer}>
-        <Text style={styles.dateText}>{currentDay || 'Select a date'}</Text>
+            <View>
+              <Text>{user.firstName} {user.lastName}</Text>
+              <Text>{user.email}</Text>
+              <Text>Height: {user.height} cm</Text>
+              <Text>Weight: {user.weigth} kg</Text>
+              <Text>Category: {user.categoryR.categoryName}</Text>
+            </View>
+          </View>
+        )}
+      </View>
+
+      {/* Date Input */}
+      <View style={styles.componentContainer}>
+        <Calendar
+          markedDates={{
+            [currentDay || '']: { selected: true, selectedColor: 'blue' }, // Highlight the selected date
+          }}
+          onDayPress={(day) => { console.log('Day pressed'); handleDateInput(day.dateString); }}
+        />
       </View>
 
 
       {/* Macros and Calories */}
-      <View style={styles.chartContainer}>
+      <View style={styles.componentContainer}>
+        <View style={styles.chartContainer}>
         <PieChart
           data={[
             { name: 'Protein', population: macros.protein, color: 'blue', legendFontColor: '#7F7F7F', legendFontSize: 12 },
@@ -116,55 +147,70 @@ const OtherProfileScreen = ({ route }) => {
           style={styles.chart}
         />
         <Text style={styles.caloriesText}>Calories: {calories} kcal</Text>
+        </View>
       </View>
 
-      {/* Products */}
-      <Text style={styles.sectionTitle}>Products</Text>
-      <FlatList
-        data={products}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.listItem}>
-            <Text>
-              {item.name} - {item.kcals} kcal
-            </Text>
-          </View>
-        )}
-      />
+      <View style={styles.componentContainer}>
+        <Text style={styles.sectionTitle}>Products</Text>
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.listItem}>
+              <Text>
+                {item.name} - {item.kcals} kcal
+              </Text>
+            </View>
+          )}
+        />
+      </View>
 
       {/* Trainings */}
-      <Text style={styles.sectionTitle}>Trainings</Text>
-      <FlatList
-        data={trainings}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.listItem}>
-            <Text>Training created by: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
-            <Button
-              title="View Training"
-              onPress={() =>
-                navigation.navigate('TrainingDetails', {
-                  trainingId: item.id,
-                })
-              }
-            />
-          </View>
-        )}
-      />
 
-      <ProfileCommentForm commentTo={userId}/>
+      <View style={styles.componentContainer}>
+        <Text style={styles.sectionTitle}>Trainings</Text>
+        <FlatList
+          data={trainings}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.listItem}>
+              <Text>Training created by: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+              <Button
+                title="View Training"
+                onPress={() =>
+                  navigation.navigate('TrainingDetails', {
+                    trainingId: item.id,
+                  })
+                }
+              />
+              <Button
+                title='Add'
+                onPress={() => {
+                  handleAddToUser(item.id);
+                }}
+              >
+              </Button>
+            </View>
+          )}
+        />
+      </View>
+
+      <ProfileCommentForm commentTo={userId} />
 
       {/* Comments */}
-      <Text style={styles.sectionTitle}>Profile Comments</Text>
-      <FlatList
-        data={comments}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.listItem}>
-            <Text>{item.userR.firstName} {item.userR.lastName}: {item.text}</Text>
-          </View>
-        )}
-      />
+      <View style={styles.componentContainer}>
+        <Text style={styles.sectionTitle}>Profile Comments</Text>
+        <FlatList
+          data={comments}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.listItem}>
+              <Text>{item.userR.firstName} {item.userR.lastName}: {item.text}</Text>
+            </View>
+          )}
+        />
+      </View>
+
     </ScrollView>
   );
 };
@@ -172,7 +218,28 @@ const OtherProfileScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
+  },
+  componentContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
     padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  userInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 40,
+    marginRight: 16,
   },
   input: {
     borderWidth: 1,

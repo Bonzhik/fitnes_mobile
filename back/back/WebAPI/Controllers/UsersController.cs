@@ -32,6 +32,14 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetById(long userId)
+        {
+            var result = await _userService.GetUserByIdAsync(userId);
+
+            return Ok(result);
+        }
+
         [HttpGet("filtered")]
         public async Task<IActionResult> GetFiltered()
         {
