@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Text, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, Text, View, StyleSheet, Image } from 'react-native';
 import { UserService } from '../../api/userService';
 import { UserDto } from '../../dtos/dtos';
 
@@ -39,13 +39,23 @@ const PersonalDataScreen = () => {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Личная информация</Text>
-            <Text style={styles.label}>Имя: {user.firstName} {user.lastName}</Text>
-            <Text style={styles.label}>Email: {user.email}</Text>
-            <Text style={styles.label}>Рост: {user.height} см</Text>
-            <Text style={styles.label}>Вес: {user.weigth} кг</Text>
-            <Text style={styles.label}>Категория: {user.categoryR.categoryName}</Text>
+        <View style={styles.componentContainer}>
+            {user && (
+                <View style={styles.userInfoContainer}>
+                    <Image
+                        source={user.imageUrl ? { uri: user.imageUrl } : require("../../../assets/default-image.jpg")}
+                        style={styles.userImage}
+                    />
+
+                    <View>
+                        <Text style={styles.userText}>{user.firstName} {user.lastName}</Text>
+                        <Text style={styles.userText}>{user.email}</Text>
+                        <Text style={styles.userText}>Рост: {user.height} см</Text>
+                        <Text style={styles.userText}>Вес: {user.weigth} кг</Text>
+                        <Text style={styles.userText}>Категория: {user.categoryR.categoryName}</Text>
+                    </View>
+                </View>
+            )}
         </View>
     );
 };
@@ -55,6 +65,33 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: '#f9f9f9',
+    },
+    componentContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    userText: {
+        fontSize: 20,
+        fontWeight: "bold",
+    },
+    userInfoContainer: {
+        flexDirection: 'row',
+        flex: 1,
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    userImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 40,
+        marginRight: 16,
     },
     header: {
         fontSize: 24,

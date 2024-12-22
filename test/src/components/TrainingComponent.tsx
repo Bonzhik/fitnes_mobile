@@ -28,30 +28,48 @@ const TrainingComponent = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Training Details</Text>
-            {training && (
-                <View>
-                    <Text style={styles.subtitle}>{training.name}</Text>
-                    <Text>{training.description}</Text>
-                </View>
-            )}
+            <Text style={styles.title}>Детали тренировки</Text>
 
-            <Text style={styles.subtitle}>Exercises</Text>
-            <FlatList
-                data={exercises}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <Text style={styles.listItem}>{item.name}</Text>
-                )}
-            />
-            
+            <View style={styles.componentContainer}>
+                <Text style={styles.subtitle}>Название - {training?.name}</Text>
+                <Text>{training?.description}</Text>
+            </View>
+
+            <View style={styles.componentContainer}>
+                <Text style={styles.subtitle}>Упражнения</Text>
+                <FlatList
+                    data={exercises}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                        <>
+                            <View style={styles.listItem}>
+                                <Text>Название - {item.name}</Text>
+                                <Text>{item.description}</Text>
+                            </View>
+                        </>
+                    )}
+                />
+            </View>
+
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    componentContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+        marginTop: 10
+    },
     container: { flex: 1, padding: 16 },
-    title: { fontSize: 24, fontWeight: 'bold' },
+    title: { fontSize: 24, fontWeight: 'bold', alignSelf: 'center', textAlign: 'center' },
     subtitle: { fontSize: 18, marginTop: 16 },
     listItem: { padding: 8, borderBottomWidth: 1, borderBottomColor: '#ccc' },
 });

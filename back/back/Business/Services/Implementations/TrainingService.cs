@@ -38,9 +38,15 @@ namespace Business.Services.Implementations
                 exercises.Add(await _exerciseRepository.GetByIdAsync(exercise));  
             }
 
+            var user = await _userRepository.GetByIdAsync(userId);
+            var users = new List<User>() { user };
+
             var training = new Training
             {
-                CreatedBy = await _userRepository.GetByIdAsync(userId),
+                Name = trainingW.Name,
+                Description = trainingW.Description,
+                Users = users,
+                CreatedBy = user,
                 Exercises = exercises,
                 TrainingCategory = await _trainingCategoryRepository.GetByIdAsync(trainingW.CategoryId)
             };
@@ -60,6 +66,8 @@ namespace Business.Services.Implementations
                 trainingsDto.Add(new TrainingR
                 {
                     Id = training.Id,
+                    Name = training.Name,
+                    Description = training.Description,
                     CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
                 });
             }
@@ -74,6 +82,8 @@ namespace Business.Services.Implementations
             var trainingDto = new TrainingR
             {
                 Id = training.Id,
+                Name = training.Name,
+                Description = training.Description,
                 CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
             };
 
@@ -92,6 +102,8 @@ namespace Business.Services.Implementations
                 trainingsDto.Add(new TrainingR
                 {
                     Id = training.Id,
+                    Name = training.Name,
+                    Description = training.Description,
                     CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
                 });
             }
@@ -111,6 +123,8 @@ namespace Business.Services.Implementations
                 trainingsDto.Add(new TrainingR
                 {
                     Id = training.Id,
+                    Name = training.Name,
+                    Description = training.Description,
                     CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
                 });
             }
@@ -130,6 +144,8 @@ namespace Business.Services.Implementations
                 trainingsDto.Add(new TrainingR
                 {
                     Id = training.Id,
+                    Name = training.Name,
+                    Description = training.Description,
                     CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
                 });
             }

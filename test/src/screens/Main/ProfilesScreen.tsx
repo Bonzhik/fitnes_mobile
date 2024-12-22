@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { UserService } from '../../api/userService';
 import { UserDto } from '../../dtos/dtos';
@@ -25,13 +25,22 @@ const ProfilesScreen = () => {
       style={styles.userItem}
       onPress={() => navigation.navigate('OtherProfile', { userId: item.id })}
     >
-      <Text style={styles.userName}>{item.id}</Text>
+      <View style={styles.userContainer}>
+        <Image
+          source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/default-image.jpg")}
+          style={styles.userImage}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.userName}>{item.firstName} {item.lastName}</Text>
+          <Text style={styles.userCategory}>{item.categoryR.categoryName}</Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Filtered Users</Text>
+      <Text style={styles.title}>Похожие пользователи</Text>
       <FlatList
         data={users}
         keyExtractor={(item) => item.id.toString()}
@@ -42,6 +51,39 @@ const ProfilesScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  userItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  userContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    flex: 1,
+  },
+  userImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  textContainer: {
+    flexDirection: 'column',
+  },
+  userName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  userCategory: {
+    fontSize: 18,
+    color: '#666',
+  },
   container: {
     flex: 1,
     padding: 16,
@@ -51,15 +93,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
-  },
-  userItem: {
-    padding: 12,
-    marginVertical: 8,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-  },
-  userName: {
-    fontSize: 16,
   },
 });
 

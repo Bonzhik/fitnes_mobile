@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, ScrollView } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, ScrollView, Image } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import { ProductR, DayR, TrainingR, ProfileCommentR } from '../../dtos/dtos';
 import { ProductService } from '../../api/productService';
@@ -82,27 +82,28 @@ const DiaryScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Calendar */}
+      <View style={styles.componentContainer}>
       <Calendar
         markedDates={{
           [currentDay || '']: { selected: true, selectedColor: 'blue' }, // Highlight the selected date
         }}
         onDayPress={(day) => { console.log('Day pressed'); handleDateSelect(day.dateString); }}
       />
+      </View>
 
       {showForm ? (
         <CreateDayForm selectedDate={currentDay} /> // Передаем текущую дату в форму
       ) : (
         <>
-          <Text style={styles.dateText}>{currentDay || 'Select a date'}</Text>
 
           {/* Macros and Calories */}
+          <View style={styles.componentContainer}>
           <View style={styles.chartContainer}>
             <PieChart
               data={[
-                { name: 'Protein', population: macros.protein, color: 'blue', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-                { name: 'Fats', population: macros.fats, color: 'red', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-                { name: 'Carbs', population: macros.carbs, color: 'green', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                { name: 'Белки', population: macros.protein, color: 'blue', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                { name: 'Жиры', population: macros.fats, color: 'red', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                { name: 'Углеводы', population: macros.carbs, color: 'green', legendFontColor: '#7F7F7F', legendFontSize: 12 },
               ]}
               width={300}
               height={200}
@@ -117,46 +118,74 @@ const DiaryScreen = () => {
               paddingLeft="15"
               style={styles.chart}
             />
-            <Text style={styles.caloriesText}>Calories: {calories} kcal</Text>
+            <Text style={styles.caloriesText}>Калории: {calories} ккал</Text>
+          </View>
           </View>
 
           {/* Products */}
-          <Text style={styles.sectionTitle}>Products</Text>
+          <View style={styles.componentContainer}>
+          <Text style={styles.sectionTitle}>Продукты</Text>
           <FlatList
             data={products}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <View style={styles.listItem}>
-                <Text>
-                  {item.name} - {item.kcals} kcal
-                </Text>
+              <View key={item.id} style={styles.productContainer}>
+                <View style={styles.productLeft}>
+                  <Image
+                    source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/default-product.jpg")}  // Assuming `imageUrl` is the field that holds the image URL
+                    style={styles.productImage}
+                  />
+                  <Text style={styles.productName}>{item.name}</Text>
+                </View>
+                <View style={styles.productRight}>
+                  <Text>Жиры: {item.fats}</Text>
+                  <Text>Углеводы: {item.carbohydrates}</Text>
+                  <Text>Белки: {item.proteins}</Text>
+                  <Text>Калории: {item.kcals}</Text>
+                </View>
               </View>
             )}
           />
+          </View>
 
           {/* Trainings */}
-          <Text style={styles.sectionTitle}>Trainings</Text>
+          <View style={styles.componentContainer}>
+          <Text style={styles.sectionTitle}>Тренировки</Text>
           <FlatList
             data={trainings}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.listItem}>
-                <Text>Training created by: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+                    <Text>Тренировка - {item.name} Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
               </View>
             )}
           />
+          </View>
 
           {/* Comments */}
-          <Text style={styles.sectionTitle}>Profile Comments</Text>
-          <FlatList
-            data={comments}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.listItem}>
-                <Text>{item.userR.lastName} {item.userR.firstName}: {item.text}</Text>
-              </View>
-            )}
-          />
+          <View style={styles.componentContainer}>
+            <Text style={styles.sectionTitle}>Комментарии</Text>
+            <FlatList
+              data={comments}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.commentContainer}>
+                  <View style={styles.commentUserContainer}>
+                    <View style={styles.commentImageContainer}>
+                      <Image
+                        source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
+                        style={styles.commentImage}
+                      />
+                      <Text style={styles.commentUserName}>
+                        {item.userR.firstName} {item.userR.lastName}
+                      </Text>
+                    </View>
+                    <Text style={styles.commentText}>{item.text}</Text>
+                  </View>
+                </View>
+              )}
+            />
+          </View>
         </>
       )}
     </ScrollView>
@@ -164,6 +193,70 @@ const DiaryScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  productContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  productLeft: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  productImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  productName: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  productRight: {
+    flex: 1,
+    justifyContent: 'space-around',
+  },
+  componentContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  commentContainer: {
+    flexDirection: 'row', // Размещаем элементы в строку
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc', // Для разделения комментариев
+    alignItems: 'flex-start', // Выравнивание по верхнему краю
+  },
+  commentUserContainer: {
+    flexDirection: 'row', // Размещаем картинку и комментарий по горизонтали
+    alignItems: 'flex-start', // Выравниваем по верхнему краю
+  },
+  commentImageContainer: {
+    alignItems: 'center', // Выравнивание картинки и имени по центру
+    marginRight: 10, // Отступ между картинкой и текстом
+  },
+  commentImage: {
+    width: 75,
+    height: 75,
+    borderRadius: 40,
+  },
+  commentUserName: {
+    marginTop: 5, // Отступ для фамилии и имени
+    textAlign: 'center',
+  },
+  commentText: {
+    flex: 1, // Заполняем оставшееся пространство
+    marginTop: 5, // Отступ сверху
+    textAlign: 'left', // Текст комментария слева
+  },
   container: {
     flex: 1,
     padding: 16,

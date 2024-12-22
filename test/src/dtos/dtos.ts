@@ -27,6 +27,8 @@ export interface ProfileCommentR {
 }
 
 export interface TrainingW {
+    name: string;
+    description: string;
     exerciseIds: number[];
     categoryId: number;
 }

@@ -41,7 +41,7 @@ const ProfileCommentForm = ({ commentTo }) => {
             onSubmit={handleSubmit}
         >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-                <View style={styles.container}>
+                <View style={styles.componentContainer}>
                     <TextInput
                         style={[styles.textArea, touched.text && errors.text ? styles.errorInput : null]}
                         placeholder="Введите ваш комментарий"
@@ -62,10 +62,17 @@ const ProfileCommentForm = ({ commentTo }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 16,
+    componentContainer: {
         backgroundColor: '#fff',
-    },
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+      },
     textArea: {
         height: 100,
         borderColor: '#ccc',

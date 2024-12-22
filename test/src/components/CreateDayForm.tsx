@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Formik } from 'formik';
 import { DayService } from '../api/dayService';
 import { ProductService } from '../api/productService';
@@ -8,7 +8,7 @@ import { DayW } from '../dtos/dtos';
 import { ProductR, TrainingR } from '../dtos/dtos';
 
 interface CreateDayFormProps {
-  selectedDate: string; // Pass selected date as prop
+  selectedDate: string;
 }
 
 const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
@@ -16,8 +16,8 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
   const [trainings, setTrainings] = useState<TrainingR[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductR[]>([]);
   const [filteredTrainings, setFilteredTrainings] = useState<TrainingR[]>([]);
-  const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
-  const [selectedTrainingIds, setSelectedTrainingIds] = useState<number[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<ProductR[]>([]);
+  const [selectedTrainings, setSelectedTrainings] = useState<TrainingR[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,12 +41,12 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
     setFilteredTrainings(filtered);
   };
 
-  const addProduct = (id: number) => {
-    setSelectedProductIds(prev => [...prev, id]);
+  const addProduct = (product: ProductR) => {
+    setSelectedProducts(prev => [...prev, product]);
   };
 
-  const addTraining = (id: number) => {
-    setSelectedTrainingIds(prev => [...prev, id]);
+  const addTraining = (training: TrainingR) => {
+    setSelectedTrainings(prev => [...prev, training]);
   };
 
   return (
@@ -57,13 +57,13 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
         try {
           const newDay: DayW = {
             dayDate: values.dayDate,
-            productIds: selectedProductIds,
-            trainingIds: selectedTrainingIds,
+            productIds: selectedProducts.map(item => item.id),
+            trainingIds: selectedTrainings.map(item => item.id),
           };
           await DayService.createDay(newDay);
           resetForm();
-          setSelectedProductIds([]);
-          setSelectedTrainingIds([]);
+          setSelectedProducts([]);
+          setSelectedTrainings([]);
         } catch (error) {
           console.error(error);
         }
@@ -71,60 +71,89 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
     >
       {({ handleChange, handleSubmit, values }) => (
         <ScrollView style={styles.container}>
-          <View style={styles.dateContainer}>
-            <Text style={styles.label}>Selected Date:</Text>
-            <Text style={styles.dateText}>{selectedDate}</Text>
+
+          <View style={styles.componentContainer}>
+            <Text style={styles.label}>Искать продукты:</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleProductSearch}
+              placeholder="Искать продукты..."
+            />
+            {filteredProducts.map(product => (
+              <View key={product.id} style={styles.productContainer}>
+                <View style={styles.productLeft}>
+                  <Image
+                    source={product.imageUrl ? { uri: product.imageUrl } : require("../../assets/default-product.jpg")}  // Assuming `imageUrl` is the field that holds the image URL
+                    style={styles.productImage}
+                  />
+                  <Text style={styles.productName}>{product.name}</Text>
+                </View>
+                <View style={styles.productRight}>
+                  <Text>Жиры: {product.fats}</Text>
+                  <Text>Углеводы: {product.carbohydrates}</Text>
+                  <Text>Белки: {product.proteins}</Text>
+                  <Text>Калории: {product.kcals}</Text>
+                  <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => addProduct(product)}
+                  >
+                    <Text style={styles.addButtonText}>Добавить</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
           </View>
 
-          <Text style={styles.label}>Search Products:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleProductSearch}
-            placeholder="Search products..."
-          />
-          {filteredProducts.map(product => (
-            <View key={product.id} style={styles.itemContainer}>
-              <Text>{product.name}</Text>
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => addProduct(product.id)}
-              >
-                <Text style={styles.addButtonText}>Add</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+          <View style={styles.componentContainer}>
+            <Text style={styles.label}>Выбранные продукты:</Text>
+            {selectedProducts.map((product, index) => (
+              <View key={product.id} style={styles.productContainer}>
+                <View style={styles.productLeft}>
+                  <Image
+                    source={product.imageUrl ? { uri: product.imageUrl } : require("../../assets/default-product.jpg")}  // Assuming `imageUrl` is the field that holds the image URL
+                    style={styles.productImage}
+                  />
+                  <Text style={styles.productName}>{product.name}</Text>
+                </View>
+                <View style={styles.productRight}>
+                  <Text>Жиры: {product.fats}</Text>
+                  <Text>Углеводы: {product.carbohydrates}</Text>
+                  <Text>Белки: {product.proteins}</Text>
+                  <Text>Калории: {product.kcals}</Text>
 
-          <Text style={styles.label}>Selected Products:</Text>
-          {selectedProductIds.map((id, index) => (
-            <Text key={index} style={styles.selectedItem}>
-              Product ID: {id}
-            </Text>
-          ))}
+                </View>
+              </View>
+            ))}
+          </View>
 
-          <Text style={styles.label}>Search Trainings:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleTrainingSearch}
-            placeholder="Search trainings..."
-          />
-          {filteredTrainings.map(training => (
-            <View key={training.id} style={styles.itemContainer}>
-              <Text>Training ID: {training.id}</Text>
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => addTraining(training.id)}
-              >
-                <Text style={styles.addButtonText}>Add</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+          <View style={styles.componentContainer}>
+            <Text style={styles.label}>Искать тренировки:</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleTrainingSearch}
+              placeholder="Искать тренировки..."
+            />
+            {filteredTrainings.map(training => (
+              <View key={training.id}>
+                <Text>Тренировка {training.name} Создана: {training.createdBy.firstName} {training.createdBy.lastName}</Text>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => addTraining(training)}
+                >
+                  <Text style={styles.addButtonText}>Добавить</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
 
-          <Text style={styles.label}>Selected Trainings:</Text>
-          {selectedTrainingIds.map((id, index) => (
-            <Text key={index} style={styles.selectedItem}>
-              Training ID: {id}
-            </Text>
-          ))}
+          <View style={styles.componentContainer}>
+            <Text style={styles.label}>Выбранные тренировки:</Text>
+            {selectedTrainings.map((item, index) => (
+              <Text key={index} style={styles.selectedItem}>
+                Тренировка {item.name} Создана: {item.createdBy.firstName} {item.createdBy.lastName}
+              </Text>
+            ))}
+          </View>
 
           <Button title="Submit" onPress={handleSubmit} />
         </ScrollView>
@@ -136,6 +165,17 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+  },
+  componentContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   label: {
     fontSize: 16,
@@ -149,16 +189,35 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 4,
   },
-  itemContainer: {
+  productContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 16,
+  },
+  productLeft: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  productImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
     marginBottom: 8,
+  },
+  productName: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  productRight: {
+    flex: 1,
+    justifyContent: 'space-around',
   },
   addButton: {
     backgroundColor: '#007BFF',
     padding: 8,
     borderRadius: 4,
+    marginTop: 8,
   },
   addButtonText: {
     color: '#fff',

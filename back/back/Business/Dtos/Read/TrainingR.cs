@@ -9,6 +9,8 @@ namespace Business.Dtos.Read
     public class TrainingR
     {
         public long Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; } 
         public UserR CreatedBy { get; set; }
     }
 }

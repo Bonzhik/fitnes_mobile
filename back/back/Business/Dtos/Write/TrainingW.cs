@@ -8,6 +8,8 @@ namespace Business.Dtos.Write
 {
     public class TrainingW
     {
+        public string Name { get; set; }
+        public string Description { get; set; }
         public long[] ExerciseIds { get; set; }
         public long CategoryId { get; set; }
     }

@@ -103,11 +103,11 @@ const OtherProfileScreen = ({ route }) => {
             />
 
             <View>
-              <Text>{user.firstName} {user.lastName}</Text>
-              <Text>{user.email}</Text>
-              <Text>Height: {user.height} cm</Text>
-              <Text>Weight: {user.weigth} kg</Text>
-              <Text>Category: {user.categoryR.categoryName}</Text>
+              <Text style={styles.userText}>{user.firstName} {user.lastName}</Text>
+              <Text style={styles.userText}>{user.email}</Text>
+              <Text style={styles.userText}>Рост: {user.height} см</Text>
+              <Text style={styles.userText}>Вес: {user.weigth} кг</Text>
+              <Text style={styles.userText}>Категория: {user.categoryR.categoryName}</Text>
             </View>
           </View>
         )}
@@ -123,89 +123,108 @@ const OtherProfileScreen = ({ route }) => {
         />
       </View>
 
-
-      {/* Macros and Calories */}
-      <View style={styles.componentContainer}>
-        <View style={styles.chartContainer}>
-        <PieChart
-          data={[
-            { name: 'Protein', population: macros.protein, color: 'blue', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-            { name: 'Fats', population: macros.fats, color: 'red', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-            { name: 'Carbs', population: macros.carbs, color: 'green', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-          ]}
-          width={300}
-          height={200}
-          chartConfig={{
-            backgroundColor: '#1cc910',
-            backgroundGradientFrom: '#eff3ff',
-            backgroundGradientTo: '#efefef',
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          }}
-          accessor="population"
-          backgroundColor="transparent"
-          paddingLeft="15"
-          style={styles.chart}
-        />
-        <Text style={styles.caloriesText}>Calories: {calories} kcal</Text>
-        </View>
-      </View>
-
-      <View style={styles.componentContainer}>
-        <Text style={styles.sectionTitle}>Products</Text>
-        <FlatList
-          data={products}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <Text>
-                {item.name} - {item.kcals} kcal
-              </Text>
-            </View>
-          )}
-        />
-      </View>
-
-      {/* Trainings */}
-
-      <View style={styles.componentContainer}>
-        <Text style={styles.sectionTitle}>Trainings</Text>
-        <FlatList
-          data={trainings}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <Text>Training created by: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
-              <Button
-                title="View Training"
-                onPress={() =>
-                  navigation.navigate('TrainingDetails', {
-                    trainingId: item.id,
-                  })
-                }
-              />
-              <Button
-                title='Add'
-                onPress={() => {
-                  handleAddToUser(item.id);
+      {
+        days.some(d => d.dayDate.split("T")[0] == currentDay?.split("T")[0]) ? (
+          <><View style={styles.componentContainer}>
+            <View style={styles.chartContainer}>
+              <PieChart
+                data={[
+                  { name: 'Белки', population: macros.protein, color: 'blue', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                  { name: 'Жиры', population: macros.fats, color: 'red', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                  { name: 'Углеводы', population: macros.carbs, color: 'green', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                ]}
+                width={300}
+                height={200}
+                chartConfig={{
+                  backgroundColor: '#1cc910',
+                  backgroundGradientFrom: '#eff3ff',
+                  backgroundGradientTo: '#efefef',
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                 }}
-              >
-              </Button>
+                accessor="population"
+                backgroundColor="transparent"
+                paddingLeft="15"
+                style={styles.chart} />
+              <Text style={styles.caloriesText}>Калории: {calories} ккал</Text>
             </View>
-          )}
-        />
-      </View>
+          </View><View style={styles.componentContainer}>
+              <Text style={styles.sectionTitle}>Продукты</Text>
+              <FlatList
+                data={products}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+               <View key={item.id} style={styles.productContainer}>
+                 <View style={styles.productLeft}>
+                   <Image
+                     source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/default-product.jpg")}  // Assuming `imageUrl` is the field that holds the image URL
+                     style={styles.productImage}
+                   />
+                   <Text style={styles.productName}>{item.name}</Text>
+                 </View>
+                 <View style={styles.productRight}>
+                   <Text>Жиры: {item.fats}</Text>
+                   <Text>Углеводы: {item.carbohydrates}</Text>
+                   <Text>Белки: {item.proteins}</Text>
+                   <Text>Калории: {item.kcals}</Text>
+                 </View>
+               </View>
+                )} />
+            </View><View style={styles.componentContainer}>
+              <Text style={styles.sectionTitle}>Тренировки</Text>
+              <FlatList
+                data={trainings}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <View style={styles.listItem}>
+                    <Text>Тренировка - {item.name} Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+                    <Text>{item.description}</Text>
+                    <Button
+                      title="View Training"
+                      onPress={() => navigation.navigate('TrainingDetails', {
+                        trainingId: item.id,
+                      })} />
+                    <Button
+                      title='Add'
+                      onPress={() => {
+                        handleAddToUser(item.id);
+                      }}
+                    >
+                    </Button>
+                  </View>
+                )} />
+            </View></>
 
-      <ProfileCommentForm commentTo={userId} />
+        ) : (
+          <View style={styles.componentContainer}>
+            <Image
+              source={require("../../../assets/Zzz.png")}
+              style={styles.ZzzContainer}
+            />
+          </View>
+        )
+      }
 
       {/* Comments */}
       <View style={styles.componentContainer}>
-        <Text style={styles.sectionTitle}>Profile Comments</Text>
+        <Text style={styles.sectionTitle}>Комментарии</Text>
+        <ProfileCommentForm commentTo={userId} />
         <FlatList
           data={comments}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <Text>{item.userR.firstName} {item.userR.lastName}: {item.text}</Text>
+            <View style={styles.commentContainer}>
+              <View style={styles.commentUserContainer}>
+                <View style={styles.commentImageContainer}>
+                  <Image
+                    source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
+                    style={styles.commentImage}
+                  />
+                  <Text style={styles.commentUserName}>
+                    {item.userR.firstName} {item.userR.lastName}
+                  </Text>
+                </View>
+                <Text style={styles.commentText}>{item.text}</Text>
+              </View>
             </View>
           )}
         />
@@ -216,9 +235,72 @@ const OtherProfileScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  productContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  productLeft: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  productImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  productName: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  productRight: {
+    flex: 1,
+    justifyContent: 'space-around',
+  },
+  commentContainer: {
+    flexDirection: 'row', // Размещаем элементы в строку
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc', // Для разделения комментариев
+    alignItems: 'flex-start', // Выравнивание по верхнему краю
+  },
+  commentUserContainer: {
+    flexDirection: 'row', // Размещаем картинку и комментарий по горизонтали
+    alignItems: 'flex-start', // Выравниваем по верхнему краю
+  },
+  commentImageContainer: {
+    alignItems: 'center', // Выравнивание картинки и имени по центру
+    marginRight: 10, // Отступ между картинкой и текстом
+  },
+  commentImage: {
+    width: 75,
+    height: 75,
+    borderRadius: 40,
+  },
+  commentUserName: {
+    marginTop: 5, // Отступ для фамилии и имени
+    textAlign: 'center',
+  },
+  commentText: {
+    flex: 1, // Заполняем оставшееся пространство
+    marginTop: 5, // Отступ сверху
+    textAlign: 'left', // Текст комментария слева
+  },
   container: {
     flex: 1,
     padding: 20,
+  },
+  ZzzContainer: {
+    width: '90%',
+    borderRadius: 40,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  userText: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
   componentContainer: {
     backgroundColor: '#fff',
@@ -233,11 +315,13 @@ const styles = StyleSheet.create({
   },
   userInfoContainer: {
     flexDirection: 'row',
+    flex: 1,
+    justifyContent: "space-around",
     alignItems: 'center',
   },
   userImage: {
-    width: 100,
-    height: 100,
+    width: 200,
+    height: 200,
     borderRadius: 40,
     marginRight: 16,
   },
