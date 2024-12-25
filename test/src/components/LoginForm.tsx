@@ -11,8 +11,8 @@ const LoginForm = () => {
     const auth = useContext(AuthContext);
 
     const validationSchema = Yup.object().shape({
-        email: Yup.string().email('Invalid email').required('Email is required'),
-        password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+        email: Yup.string().email('Неправильная почта').required('Почта обязательно'),
+        password: Yup.string().min(6, 'Пароль больше 6 символов').required('Пароль обязательно'),
     });
 
     const handleSubmit = async (values: typeof initialValues) => {
@@ -30,20 +30,20 @@ const LoginForm = () => {
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
                 <View style={styles.container}>
-                    <Text style={styles.label}>Email</Text>
+                    <Text style={styles.label}>Почта</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your email"
+                        placeholder="Введите почту"
                         onChangeText={handleChange('email')}
                         onBlur={handleBlur('email')}
                         value={values.email}
                     />
                     {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
-                    <Text style={styles.label}>Password</Text>
+                    <Text style={styles.label}>Пароль</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your password"
+                        placeholder="Введите пароль"
                         secureTextEntry
                         onChangeText={handleChange('password')}
                         onBlur={handleBlur('password')}
@@ -51,7 +51,7 @@ const LoginForm = () => {
                     />
                     {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
-                    <Button title="Login" onPress={handleSubmit} loading={isSubmitting} />
+                    <Button title="Войти" onPress={handleSubmit} loading={isSubmitting} />
                 </View>
             )}
         </Formik>

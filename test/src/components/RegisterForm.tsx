@@ -17,13 +17,13 @@ const RegisterForm = () => {
     };
 
     const validationSchema = Yup.object().shape({
-        email: Yup.string().email('Invalid email').required('Email is required'),
-        password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-        firstName: Yup.string().required('First name is required'),
-        lastName: Yup.string().required('Last name is required'),
-        height: Yup.number().required('Height is required'),
-        weight: Yup.number().required('Weight is required'),
-        categoryId: Yup.number().required('Category ID is required'),
+        email: Yup.string().email('Неправильная почта').required('Почта обязательно'),
+        password: Yup.string().min(6, 'Пароль больше 6 символов').required('Пароль обязательно'),
+        firstName: Yup.string().required('Имя обязательно'),
+        lastName: Yup.string().required('Фамилия обязательно'),
+        height: Yup.number().required('Рост обязательно'),
+        weight: Yup.number().required('Вес обязательно'),
+        categoryId: Yup.number().required('Категория обязательно'),
     });
 
     const handleSubmit = async (values: typeof initialValues) => {
@@ -44,40 +44,40 @@ const RegisterForm = () => {
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
                 <View style={styles.container}>
-                    <Text style={styles.label}>First Name</Text>
+                    <Text style={styles.label}>Имя</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your first name"
+                        placeholder="Введите имя"
                         onChangeText={handleChange('firstName')}
                         onBlur={handleBlur('firstName')}
                         value={values.firstName}
                     />
                     {touched.firstName && errors.firstName && <Text style={styles.error}>{errors.firstName}</Text>}
 
-                    <Text style={styles.label}>Last Name</Text>
+                    <Text style={styles.label}>Фамилия</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your last name"
+                        placeholder="Введите фамилию"
                         onChangeText={handleChange('lastName')}
                         onBlur={handleBlur('lastName')}
                         value={values.lastName}
                     />
                     {touched.lastName && errors.lastName && <Text style={styles.error}>{errors.lastName}</Text>}
 
-                    <Text style={styles.label}>Email</Text>
+                    <Text style={styles.label}>Пчота</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your email"
+                        placeholder="Введите почту"
                         onChangeText={handleChange('email')}
                         onBlur={handleBlur('email')}
                         value={values.email}
                     />
                     {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
-                    <Text style={styles.label}>Password</Text>
+                    <Text style={styles.label}>Пароль</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your password"
+                        placeholder="Введите пароль"
                         secureTextEntry
                         onChangeText={handleChange('password')}
                         onBlur={handleBlur('password')}
@@ -85,10 +85,10 @@ const RegisterForm = () => {
                     />
                     {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
-                    <Text style={styles.label}>Height</Text>
+                    <Text style={styles.label}>Рост</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your height"
+                        placeholder="Введите рост"
                         keyboardType="numeric"
                         onChangeText={handleChange('height')}
                         onBlur={handleBlur('height')}
@@ -96,10 +96,10 @@ const RegisterForm = () => {
                     />
                     {touched.height && errors.height && <Text style={styles.error}>{errors.height}</Text>}
 
-                    <Text style={styles.label}>Weight</Text>
+                    <Text style={styles.label}>Вес</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your weight"
+                        placeholder="Введите вес"
                         keyboardType="numeric"
                         onChangeText={handleChange('weight')}
                         onBlur={handleBlur('weight')}
@@ -107,10 +107,10 @@ const RegisterForm = () => {
                     />
                     {touched.weight && errors.weight && <Text style={styles.error}>{errors.weight}</Text>}
 
-                    <Text style={styles.label}>Category ID</Text>
+                    <Text style={styles.label}>Категория</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Enter your category ID"
+                        placeholder="Выберите категорию"
                         keyboardType="numeric"
                         onChangeText={handleChange('categoryId')}
                         onBlur={handleBlur('categoryId')}
