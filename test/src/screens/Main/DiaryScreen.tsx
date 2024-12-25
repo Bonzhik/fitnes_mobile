@@ -124,15 +124,12 @@ const DiaryScreen = () => {
 
           {/* Products */}
           <View style={styles.componentContainer}>
-          <Text style={styles.sectionTitle}>Продукты</Text>
-          <FlatList
-            data={products}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
+            <Text style={styles.sectionTitle}>Продукты</Text>
+            {products.map((item) => (
               <View key={item.id} style={styles.productContainer}>
                 <View style={styles.productLeft}>
                   <Image
-                    source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/default-product.jpg")}  // Assuming `imageUrl` is the field that holds the image URL
+                    source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/default-product.jpg")}
                     style={styles.productImage}
                   />
                   <Text style={styles.productName}>{item.name}</Text>
@@ -144,47 +141,38 @@ const DiaryScreen = () => {
                   <Text>Калории: {item.kcals}</Text>
                 </View>
               </View>
-            )}
-          />
+            ))}
           </View>
 
           {/* Trainings */}
           <View style={styles.componentContainer}>
-          <Text style={styles.sectionTitle}>Тренировки</Text>
-          <FlatList
-            data={trainings}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.listItem}>
-                    <Text>Тренировка - {item.name} Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+            <Text style={styles.sectionTitle}>Тренировки</Text>
+            {trainings.map((item) => (
+              <View key={item.id} style={styles.listItem}>
+                <Text>Тренировка - {item.name} Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
               </View>
-            )}
-          />
+            ))}
           </View>
 
           {/* Comments */}
           <View style={styles.componentContainer}>
             <Text style={styles.sectionTitle}>Комментарии</Text>
-            <FlatList
-              data={comments}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <View style={styles.commentContainer}>
-                  <View style={styles.commentUserContainer}>
-                    <View style={styles.commentImageContainer}>
-                      <Image
-                        source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
-                        style={styles.commentImage}
-                      />
-                      <Text style={styles.commentUserName}>
-                        {item.userR.firstName} {item.userR.lastName}
-                      </Text>
-                    </View>
-                    <Text style={styles.commentText}>{item.text}</Text>
+            {comments.map((item) => (
+              <View key={item.id} style={styles.commentContainer}>
+                <View style={styles.commentUserContainer}>
+                  <View style={styles.commentImageContainer}>
+                    <Image
+                      source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
+                      style={styles.commentImage}
+                    />
+                    <Text style={styles.commentUserName}>
+                      {item.userR.firstName} {item.userR.lastName}
+                    </Text>
                   </View>
+                  <Text style={styles.commentText}>{item.text}</Text>
                 </View>
-              )}
-            />
+              </View>
+            ))}
           </View>
         </>
       )}

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View, StyleSheet, Image } from 'react-native';
 import { UserService } from '../../api/userService';
 import { UserDto } from '../../dtos/dtos';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const PersonalDataScreen = () => {
     const [user, setUser] = useState<UserDto | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -14,39 +14,22 @@ const PersonalDataScreen = () => {
                 setUser(userData);
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchUserData();
     }, []);
 
-    if (loading) {
-        return (
-            <View style={styles.loaderContainer}>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </View>
-        );
-    }
-
-    if (!user) {
-        return (
-            <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>Не удалось загрузить данные пользователя.</Text>
-            </View>
-        );
-    }
 
     return (
-        <View style={styles.componentContainer}>
-            {user && (
+        <ScrollView style={styles.container}>
+        {user ? (
+            <View style={styles.componentContainer}>
                 <View style={styles.userInfoContainer}>
                     <Image
                         source={user.imageUrl ? { uri: user.imageUrl } : require("../../../assets/default-image.jpg")}
                         style={styles.userImage}
                     />
-
                     <View>
                         <Text style={styles.userText}>{user.firstName} {user.lastName}</Text>
                         <Text style={styles.userText}>{user.email}</Text>
@@ -55,14 +38,19 @@ const PersonalDataScreen = () => {
                         <Text style={styles.userText}>Категория: {user.categoryR.categoryName}</Text>
                     </View>
                 </View>
-            )}
-        </View>
+            </View>
+        ) : (
+            <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        )}
+    </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 1, // Занимает всё пространство экрана
         padding: 20,
         backgroundColor: '#f9f9f9',
     },
@@ -78,7 +66,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     userText: {
-        fontSize: 20,
+        fontSize: 14,
         fontWeight: "bold",
     },
     userInfoContainer: {
@@ -93,17 +81,8 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         marginRight: 16,
     },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    label: {
-        fontSize: 16,
-        marginVertical: 5,
-    },
     loaderContainer: {
-        flex: 1,
+        flex: 1, // Центрирование на всём экране
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f9f9f9',

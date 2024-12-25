@@ -30,7 +30,7 @@ const CreateTrainingForm = () => {
 
     return (
         <Formik
-            initialValues={{ name: "", description: "", exerciseIds: [], categoryId: 1 }}
+            initialValues={{ name: "test", description: "test", exerciseIds: [], categoryId: 1 }}
             enableReinitialize
             onSubmit={async (values, { resetForm }) => {
                 try {
@@ -75,32 +75,31 @@ const CreateTrainingForm = () => {
                     </View>
 
                     <View style={styles.componentContainer}>
-                        <Text style={styles.label}>Название</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Введите название"
-                            onChange={handleChange('name')}
-                            value={values.name}
-                        />
-
-
-                        <Text style={styles.label}>Описание</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Введите описание"
-                            onChange={handleChange('description')}
-                            value={values.description}
-                        />
-                    </View>
-
-                    <View style={styles.componentContainer}>
-                        <Text style={styles.label}>Выбранные продукты:</Text>
+                        <Text style={styles.label}>Выбранные упражнения:</Text>
                         {selectedExercises.map((exercise, index) => (
                             <View key={exercise.id} style={styles.componentContainer}>
                                 <Text>Название: {exercise.name}</Text>
                                 <Text>Описание: {exercise.description}</Text>
                             </View>
                         ))}
+                    </View>
+
+                    <View style={styles.componentContainer}>
+                        <Text style={styles.label}>Название</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Введите название"
+                            onChangeText={handleChange('name')} // Обновляет состояние формы
+                            value={values.name} // Связывает поле с состоянием формы
+                        />
+
+                        <Text style={styles.label}>Описание</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Введите описание"
+                            onChangeText={handleChange('description')} // Обновляет состояние формы
+                            value={values.description} // Связывает поле с состоянием формы
+                        />
                     </View>
 
                     <Button title="Submit" onPress={handleSubmit} />

@@ -125,75 +125,78 @@ const OtherProfileScreen = ({ route }) => {
 
       {
         days.some(d => d.dayDate.split("T")[0] == currentDay?.split("T")[0]) ? (
-          <><View style={styles.componentContainer}>
-            <View style={styles.chartContainer}>
-              <PieChart
-                data={[
-                  { name: 'Белки', population: macros.protein, color: 'blue', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-                  { name: 'Жиры', population: macros.fats, color: 'red', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-                  { name: 'Углеводы', population: macros.carbs, color: 'green', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-                ]}
-                width={300}
-                height={200}
-                chartConfig={{
-                  backgroundColor: '#1cc910',
-                  backgroundGradientFrom: '#eff3ff',
-                  backgroundGradientTo: '#efefef',
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                }}
-                accessor="population"
-                backgroundColor="transparent"
-                paddingLeft="15"
-                style={styles.chart} />
-              <Text style={styles.caloriesText}>Калории: {calories} ккал</Text>
+          <>
+            {/* Chart Section */}
+            <View style={styles.componentContainer}>
+              <View style={styles.chartContainer}>
+                <PieChart
+                  data={[
+                    { name: 'Белки', population: macros.protein, color: 'blue', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                    { name: 'Жиры', population: macros.fats, color: 'red', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                    { name: 'Углеводы', population: macros.carbs, color: 'green', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                  ]}
+                  width={300}
+                  height={200}
+                  chartConfig={{
+                    backgroundColor: '#1cc910',
+                    backgroundGradientFrom: '#eff3ff',
+                    backgroundGradientTo: '#efefef',
+                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  }}
+                  accessor="population"
+                  backgroundColor="transparent"
+                  paddingLeft="15"
+                  style={styles.chart}
+                />
+                <Text style={styles.caloriesText}>Калории: {calories} ккал</Text>
+              </View>
             </View>
-          </View><View style={styles.componentContainer}>
-              <Text style={styles.sectionTitle}>Продукты</Text>
-              <FlatList
-                data={products}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-               <View key={item.id} style={styles.productContainer}>
-                 <View style={styles.productLeft}>
-                   <Image
-                     source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/default-product.jpg")}  // Assuming `imageUrl` is the field that holds the image URL
-                     style={styles.productImage}
-                   />
-                   <Text style={styles.productName}>{item.name}</Text>
-                 </View>
-                 <View style={styles.productRight}>
-                   <Text>Жиры: {item.fats}</Text>
-                   <Text>Углеводы: {item.carbohydrates}</Text>
-                   <Text>Белки: {item.proteins}</Text>
-                   <Text>Калории: {item.kcals}</Text>
-                 </View>
-               </View>
-                )} />
-            </View><View style={styles.componentContainer}>
-              <Text style={styles.sectionTitle}>Тренировки</Text>
-              <FlatList
-                data={trainings}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <View style={styles.listItem}>
-                    <Text>Тренировка - {item.name} Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
-                    <Text>{item.description}</Text>
-                    <Button
-                      title="View Training"
-                      onPress={() => navigation.navigate('TrainingDetails', {
-                        trainingId: item.id,
-                      })} />
-                    <Button
-                      title='Add'
-                      onPress={() => {
-                        handleAddToUser(item.id);
-                      }}
-                    >
-                    </Button>
-                  </View>
-                )} />
-            </View></>
 
+            {/* Products Section */}
+            <View style={styles.componentContainer}>
+              <Text style={styles.sectionTitle}>Продукты</Text>
+              {products.map((item) => (
+                <View key={item.id} style={styles.productContainer}>
+                  <View style={styles.productLeft}>
+                    <Image
+                      source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/default-product.jpg")}
+                      style={styles.productImage}
+                    />
+                    <Text style={styles.productName}>{item.name}</Text>
+                  </View>
+                  <View style={styles.productRight}>
+                    <Text>Жиры: {item.fats}</Text>
+                    <Text>Углеводы: {item.carbohydrates}</Text>
+                    <Text>Белки: {item.proteins}</Text>
+                    <Text>Калории: {item.kcals}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            {/* Trainings Section */}
+            <View style={styles.componentContainer}>
+              <Text style={styles.sectionTitle}>Тренировки</Text>
+              {trainings.map((item) => (
+                <View key={item.id} style={styles.listItem}>
+                  <Text>Тренировка - {item.name} Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+                  <Text>{item.description}</Text>
+                  <Button
+                    title="View Training"
+                    onPress={() => navigation.navigate('TrainingDetails', {
+                      trainingId: item.id,
+                    })}
+                  />
+                  <Button
+                    title="Add"
+                    onPress={() => {
+                      handleAddToUser(item.id);
+                    }}
+                  />
+                </View>
+              ))}
+            </View>
+          </>
         ) : (
           <View style={styles.componentContainer}>
             <Image
@@ -204,30 +207,27 @@ const OtherProfileScreen = ({ route }) => {
         )
       }
 
+
       {/* Comments */}
       <View style={styles.componentContainer}>
         <Text style={styles.sectionTitle}>Комментарии</Text>
         <ProfileCommentForm commentTo={userId} />
-        <FlatList
-          data={comments}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.commentContainer}>
-              <View style={styles.commentUserContainer}>
-                <View style={styles.commentImageContainer}>
-                  <Image
-                    source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
-                    style={styles.commentImage}
-                  />
-                  <Text style={styles.commentUserName}>
-                    {item.userR.firstName} {item.userR.lastName}
-                  </Text>
-                </View>
-                <Text style={styles.commentText}>{item.text}</Text>
+        {comments.map((item) => (
+          <View key={item.id} style={styles.commentContainer}>
+            <View style={styles.commentUserContainer}>
+              <View style={styles.commentImageContainer}>
+                <Image
+                  source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
+                  style={styles.commentImage}
+                />
+                <Text style={styles.commentUserName}>
+                  {item.userR.firstName} {item.userR.lastName}
+                </Text>
               </View>
+              <Text style={styles.commentText}>{item.text}</Text>
             </View>
-          )}
-        />
+          </View>
+        ))}
       </View>
 
     </ScrollView>
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
   },
   userText: {
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: "bold",
   },
   componentContainer: {
