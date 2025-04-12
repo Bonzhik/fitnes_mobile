@@ -163,5 +163,10 @@ namespace Business.Services.Implementations
 
             return await _userRepository.SaveAsync();
         }
+
+        public async Task<float> CalculateRating(long trainingId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

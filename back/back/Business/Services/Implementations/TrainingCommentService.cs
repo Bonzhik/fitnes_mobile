@@ -27,6 +27,11 @@ namespace Business.Services.Implementations
             _trainingRepository = trainingRepository;
         }
 
+        public async Task<float> CalculateRating(long trainingCommentId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> CreateCommentAsync(TrainingCommentW trainingCommentW, long userId)
         {
             if (await _trainingCommentRepository.IsExistsByUser(trainingCommentW.CommentTo, userId))

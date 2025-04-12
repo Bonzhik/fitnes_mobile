@@ -24,7 +24,12 @@ namespace WebAPI.Controllers
 
             var result = await _trainingCommentService.CreateCommentAsync(trainingCommentW, userId);
 
-            return Ok(result);
+            if (result)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
         [HttpGet("byTrainig/{trainingId}")]

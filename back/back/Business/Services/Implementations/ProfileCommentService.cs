@@ -19,6 +19,11 @@ namespace Business.Services.Implementations
             _userRepository = userRepository;
         }
 
+        public async Task<float> CalculateRating(long profileCommentId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> CreateCommentAsync(ProfileCommentW profileCommentW, long userId)
         {
             if (await _profileCommentRepository.IsExistsByUser(profileCommentW.CommentTo, userId))

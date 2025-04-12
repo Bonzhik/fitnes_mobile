@@ -13,5 +13,6 @@ namespace Business.Services.Interfaces
         Task<bool> CreateUserAsync(RegisterDto registerDto);
         Task<ICollection<UserR>> GetFiltered(long userId);
         Task<UserR> GetUserByIdAsync(long userId);
+        Task<float> CalculateRating(long userId);
     }
 }

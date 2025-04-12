@@ -8,6 +8,7 @@
         public int Fats { get; set; }
         public int Carbohydrates { get; set; }
         public int Kcals { get; set; }
-        public virtual ICollection<Day> Days { get; set; }
+        public virtual ICollection<Day> Days { get; set; } = [];
+        public virtual ICollection<ProductItem> ProductItems { get; set; } = [];
     }
 }

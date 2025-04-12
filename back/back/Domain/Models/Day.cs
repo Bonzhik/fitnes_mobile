@@ -4,7 +4,7 @@
     {
         public DateTime DayDate { get; set; }
         public virtual Planner Planner { get; set; }
-        public virtual ICollection<Product> Products { get; set; } = [];
+        public virtual ICollection<ProductItem> ProductItems { get; set; } = [];
         public virtual ICollection<Training> Trainings { get; set; } = [];
     }
 }

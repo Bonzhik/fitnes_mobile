@@ -23,7 +23,12 @@ namespace WebAPI.Controllers
 
             var result = await _profileCommentService.CreateCommentAsync(profileCommentW, userId);
 
-            return Ok(result);
+            if (result)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
     }

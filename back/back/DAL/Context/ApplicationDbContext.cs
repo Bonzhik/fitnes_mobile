@@ -16,6 +16,8 @@ namespace DAL.Context
         public DbSet<Product> Products { get; set; }
         public DbSet<ProfileComments> ProfileComments { get; set; }
         public DbSet<Training> Trainings { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<ProductItem> ProductItems { get; set; }
         public DbSet<TrainingCategory> TrainingCategories { get; set; }
         public DbSet<TrainingComments> TrainingComments { get; set; }
         public DbSet<User> Users { get; set; }
