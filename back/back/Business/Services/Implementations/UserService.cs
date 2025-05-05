@@ -109,12 +109,6 @@ namespace Business.Services.Implementations
             }).ToList();
         }
 
-        public async Task<float> CalculateRating(long userId)
-        {
-            throw new NotImplementedException();
-        }
-
-
         public async Task<UserR> GetUserByIdAsync(long userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);

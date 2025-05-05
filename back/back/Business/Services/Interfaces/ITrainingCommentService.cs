@@ -12,6 +12,5 @@ namespace Business.Services.Interfaces
     {
         Task<ICollection<TrainingCommentR>> GetByTrainingIdAsync(long trainingId);
         Task<bool> CreateCommentAsync(TrainingCommentW trainingCommentW, long userId);
-        Task<float> CalculateRating(long trainingCommentId);
     }
 }

@@ -9,6 +9,7 @@ namespace Business.Dtos.Write
     public class ProfileCommentW
     {
         public string Text { get; set; }
+        public int Rating { get; set; }
         public long CommentTo { get; set; }
     }
 }

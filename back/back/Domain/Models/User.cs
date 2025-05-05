@@ -19,7 +19,6 @@
         public virtual ICollection<ProfileComments> ThisProfileComments { get; set; } = [];
         public virtual ICollection<ProfileComments> ProfileComments { get; set; } = [];
         public virtual ICollection<TrainingComments> TrainingComments { get; set; } = [];
-        public virtual ICollection<Feedback> Feedbacks { get; set; } = [];
         public string? RefreshToken { get; set; }
     }
 

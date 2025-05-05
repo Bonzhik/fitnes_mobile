@@ -15,9 +15,9 @@ namespace DAL.Repositories.Implementations
         {
         }
 
-        public IQueryable<Product> GetByDayId(long dayId)
+        public IQueryable<ProductItem> GetByDayId(long dayId)
         {
-            return _db.Days.Where(d => d.Id == dayId).SelectMany(d => d.Products);
+            return _db.Days.Where(d => d.Id == dayId).SelectMany(d => d.ProductItems);
         }
 
         public IQueryable<Product> GetByName(string name)

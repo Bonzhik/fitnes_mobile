@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class ProductItem : BaseEntity
+    public interface ICommentWithRating
     {
-        public virtual Product Product { get; set; }
-        public long Count { get; set; }
+        public int Rating { get; set; }
     }
 }

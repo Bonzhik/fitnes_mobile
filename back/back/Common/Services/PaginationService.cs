@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Common.Services
 {
-    public class PaginationService
+    public static class PaginationService
     {
-        public PaginationResponse<T> Paginate<T>(IQueryable<T> source, PaginationRequest paginationRequest)
+        public static PaginationResponse<T> Paginate<T>(IQueryable<T> source, PaginationRequest paginationRequest)
         {
             var totalCount = source.Count();
             var data = source.Skip((paginationRequest.Page - 1) * paginationRequest.PageSize).Take(paginationRequest.PageSize);

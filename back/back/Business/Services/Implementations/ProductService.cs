@@ -1,6 +1,7 @@
 using Business.Dtos.Read;
 using Business.Services.Interfaces;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,24 +41,27 @@ namespace Business.Services.Implementations
             return productDtos;
         }
 
-        public async Task<ICollection<ProductR>> GetByDayIdAsync(long dayId)
+        public async Task<ICollection<ProductItemR>> GetByDayIdAsync(long dayId)
         {
-            var products = _productRepository.GetByDayId(dayId);
+            var productItemsQuery = _productRepository.GetByDayId(dayId);
 
-            List<ProductR> productDtos = [];
+            var productItems = await productItemsQuery
+                .Include(pi => pi.Product)
+                .ToListAsync();
 
-            foreach (var product in products)
+            var productDtos = productItems.Select(pi => new ProductItemR
             {
-                productDtos.Add(new ProductR
+                Product = new ProductR
                 {
-                    Id = product.Id,
-                    Name = product.Name,
-                    Proteins = product.Proteins,
-                    Fats = product.Fats,
-                    Carbohydrates = product.Carbohydrates,
-                    Kcals = product.Kcals,
-                });
-            }
+                    Id = pi.Product.Id,
+                    Name = pi.Product.Name,
+                    Proteins = pi.Product.Proteins,
+                    Fats = pi.Product.Fats,
+                    Carbohydrates = pi.Product.Carbohydrates,
+                    Kcals = pi.Product.Kcals
+                },
+                Count = (int)pi.Count
+            }).ToList();
 
             return productDtos;
         }

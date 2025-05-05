@@ -30,22 +30,38 @@ namespace Business.Services.Implementations
 
         public async Task<bool> CreateDayAsync(DayW dayW, long userId)
         {
-            if(await _daysRepository.IsExistsByDay(dayW.DayDate, userId))
+            if (await _daysRepository.IsExistsByDay(dayW.DayDate, userId))
             {
                 return false;
             }
 
-            List<Training> trainings = [];
-            List<Product> products = [];
+            List<Training> trainings = new();
+            List<ProductItem> productItems = new();
 
-            foreach (var training in dayW.TrainingIds)
+            foreach (var trainingId in dayW.TrainingIds)
             {
-                trainings.Add(await _trainingRepository.GetByIdAsync(training));
+                var training = await _trainingRepository.GetByIdAsync(trainingId);
+                if (training != null)
+                {
+                    trainings.Add(training);
+                }
             }
 
-            foreach(var product in dayW.ProductIds)
+            int rows = dayW.ProductIds.GetLength(0);
+            for (int i = 0; i < rows; i++)
             {
-                products.Add(await _productRepository.GetByIdAsync(product));
+                long productId = dayW.ProductIds[i, 0];
+                long count = dayW.ProductIds[i, 1];
+
+                var product = await _productRepository.GetByIdAsync(productId);
+                if (product != null)
+                {
+                    productItems.Add(new ProductItem
+                    {
+                        Product = product,
+                        Count = count
+                    });
+                }
             }
 
             var day = new Day
@@ -53,7 +69,7 @@ namespace Business.Services.Implementations
                 DayDate = dayW.DayDate,
                 Planner = await _plannerRepository.GetPlannerByUserIdAsync(userId),
                 Trainings = trainings,
-                Products = products,
+                ProductItems = productItems
             };
 
             return await _daysRepository.AddAsync(day);

@@ -1,6 +1,7 @@
 using Business.Dtos.Read;
 using Business.Dtos.Write;
 using Business.Services.Interfaces;
+using Common.Services;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
 using Domain.Models;
@@ -27,11 +28,6 @@ namespace Business.Services.Implementations
             _trainingRepository = trainingRepository;
         }
 
-        public async Task<float> CalculateRating(long trainingCommentId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> CreateCommentAsync(TrainingCommentW trainingCommentW, long userId)
         {
             if (await _trainingCommentRepository.IsExistsByUser(trainingCommentW.CommentTo, userId))
@@ -44,9 +40,20 @@ namespace Business.Services.Implementations
                 CommentBy = await _userRepository.GetByIdAsync(userId),
                 CommentTo = await _trainingRepository.GetByIdAsync(trainingCommentW.CommentTo),
                 Text = trainingCommentW.Text,
+                Rating = trainingCommentW.Rating,
             };
 
-            return await _trainingCommentRepository.AddAsync(comment);
+            var success = await _trainingCommentRepository.AddAsync(comment);
+
+            if (success)
+            {
+                return true;
+            }
+
+            var updatedTraining = await _trainingRepository.GetByIdAsync(trainingCommentW.CommentTo);
+            updatedTraining.Rating = RatingService.CalculateRating(updatedTraining.Comments);
+
+            return await _trainingRepository.UpdateAsync(updatedTraining);
         }
 
         public async Task<ICollection<TrainingCommentR>> GetByTrainingIdAsync(long trainingId)
