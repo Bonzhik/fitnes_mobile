@@ -10,6 +10,7 @@ namespace Business.Dtos.Read
     {
         public long Id { get; set; }
         public string Text { get; set; }
+        public int Rating { get; set; }
         public UserR UserR { get; set; }
     }
 }

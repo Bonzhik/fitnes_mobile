@@ -62,7 +62,8 @@ namespace Business.Services.Implementations
                 {
                     Id = profileComment.Id,
                     Text = profileComment.Text,
-                    UserR = await _userService.GetUserByIdAsync(profileComment.CommentBy.Id) //Optimize
+                    UserR = await _userService.GetUserByIdAsync(profileComment.CommentBy.Id), //Optimize
+                    Rating = profileComment.Rating
                 });
             }
 

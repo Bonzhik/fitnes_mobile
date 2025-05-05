@@ -17,6 +17,7 @@ export interface ExerciseR {
 
 export interface ProfileCommentW {
     text: string;
+    rating: number;
     commentTo: number;
 }
 
@@ -24,6 +25,7 @@ export interface ProfileCommentR {
     id: number;
     text: string;
     userR: UserDto;
+    rating: number;
 }
 
 export interface TrainingW {
@@ -103,4 +105,9 @@ export interface ProductR{
     fats: number;
     carbohydrates: number;
     kcals: number;
+}
+
+export interface ProductItemR{
+    product: ProductR;
+    count: number;
 }

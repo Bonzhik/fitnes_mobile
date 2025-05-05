@@ -10,7 +10,7 @@ namespace Business.Services.Interfaces
 {
     public interface IProductService
     {
-        Task<ICollection<ProductR>> GetByDayIdAsync(long dayId);
+        Task<ICollection<ProductItemR>> GetByDayIdAsync(long dayId);
         Task<ICollection<ProductR>> GetAllAsync();
         Task<ICollection<ProductR>> GetByNameAsync(string name);
     }

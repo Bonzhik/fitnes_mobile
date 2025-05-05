@@ -5,22 +5,28 @@ import * as Yup from 'yup';
 import { ProfileCommentService } from '../api/profileCommentService';
 
 const ProfileCommentForm = ({ commentTo }) => {
-    // Валидация формы с использованием Yup
     const validationSchema = Yup.object({
         text: Yup.string()
             .required('Комментарий обязателен')
-            .min(3, 'Комментарий должен содержать минимум 3 символа'),
+            .min(3, 'Минимум 3 символа'),
+        rating: Yup.number()
+            .required('Рейтинг обязателен')
+            .min(1, 'Минимум 1')
+            .max(5, 'Максимум 5'),
     });
 
-    // Начальные значения формы
     const initialValues = {
         text: '',
+        rating: '',
     };
 
-    // Обработчик отправки формы
     const handleSubmit = async (values, { resetForm }) => {
         try {
-            const profileCommentW = { text: values.text, commentTo };
+            const profileCommentW = {
+                text: values.text,
+                rating: Number(values.rating),  // Преобразуем строку в число
+                commentTo,
+            };
             const success = await ProfileCommentService.createProfileComment(profileCommentW);
             if (success) {
                 Alert.alert('Успех', 'Комментарий отправлен!');
@@ -54,6 +60,19 @@ const ProfileCommentForm = ({ commentTo }) => {
                     {touched.text && errors.text && (
                         <Text style={styles.errorText}>{errors.text}</Text>
                     )}
+
+                    <TextInput
+                        style={[styles.input, touched.rating && errors.rating ? styles.errorInput : null]}
+                        placeholder="Рейтинг (1-5)"
+                        keyboardType="numeric"
+                        onChangeText={handleChange('rating')}
+                        onBlur={handleBlur('rating')}
+                        value={values.rating.toString()}
+                    />
+                    {touched.rating && errors.rating && (
+                        <Text style={styles.errorText}>{errors.rating}</Text>
+                    )}
+
                     <Button title="Отправить" onPress={handleSubmit} />
                 </View>
             )}
@@ -72,7 +91,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 2,
-      },
+    },
     textArea: {
         height: 100,
         borderColor: '#ccc',
@@ -81,6 +100,13 @@ const styles = StyleSheet.create({
         padding: 8,
         marginBottom: 8,
         textAlignVertical: 'top',
+    },
+    input: {
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 4,
+        padding: 8,
+        marginBottom: 8,
     },
     errorInput: {
         borderColor: 'red',

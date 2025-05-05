@@ -5,7 +5,7 @@ import { DayService } from '../api/dayService';
 import { ProductService } from '../api/productService';
 import { TrainingService } from '../api/trainingService';
 import { DayW } from '../dtos/dtos';
-import { ProductR, TrainingR } from '../dtos/dtos';
+import { ProductR, ProductItemR, TrainingR } from '../dtos/dtos';
 
 interface CreateDayFormProps {
   selectedDate: string;
@@ -16,8 +16,9 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
   const [trainings, setTrainings] = useState<TrainingR[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductR[]>([]);
   const [filteredTrainings, setFilteredTrainings] = useState<TrainingR[]>([]);
-  const [selectedProducts, setSelectedProducts] = useState<ProductR[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<ProductItemR[]>([]);
   const [selectedTrainings, setSelectedTrainings] = useState<TrainingR[]>([]);
+  const [productCountMap, setProductCountMap] = useState<{ [key: number]: number }>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +43,14 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
   };
 
   const addProduct = (product: ProductR) => {
-    setSelectedProducts(prev => [...prev, product]);
+    const count = productCountMap[product.id] || 1;
+    const productItem: ProductItemR = { product, count };
+    setSelectedProducts(prev => [...prev, productItem]);
+    setProductCountMap(prev => {
+      const newMap = { ...prev };
+      delete newMap[product.id];
+      return newMap;
+    });
   };
 
   const addTraining = (training: TrainingR) => {
@@ -57,7 +65,7 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
         try {
           const newDay: DayW = {
             dayDate: values.dayDate,
-            productIds: selectedProducts.map(item => item.id),
+            productIds: selectedProducts.map(item => item.product.id),
             trainingIds: selectedTrainings.map(item => item.id),
           };
           await DayService.createDay(newDay);
@@ -83,7 +91,7 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
               <View key={product.id} style={styles.productContainer}>
                 <View style={styles.productLeft}>
                   <Image
-                    source={product.imageUrl ? { uri: product.imageUrl } : require("../../assets/default-product.jpg")}  // Assuming `imageUrl` is the field that holds the image URL
+                    source={product.imageUrl ? { uri: product.imageUrl } : require("../../assets/default-product.jpg")}
                     style={styles.productImage}
                   />
                   <Text style={styles.productName}>{product.name}</Text>
@@ -93,6 +101,18 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
                   <Text>Углеводы: {product.carbohydrates}</Text>
                   <Text>Белки: {product.proteins}</Text>
                   <Text>Калории: {product.kcals}</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Кол-во (граммы)"
+                    keyboardType="numeric"
+                    value={productCountMap[product.id]?.toString() || ''}
+                    onChangeText={(text) =>
+                      setProductCountMap(prev => ({
+                        ...prev,
+                        [product.id]: parseInt(text) || 1,
+                      }))
+                    }
+                  />
                   <TouchableOpacity
                     style={styles.addButton}
                     onPress={() => addProduct(product)}
@@ -101,26 +121,26 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
                   </TouchableOpacity>
                 </View>
               </View>
-            ))}
+            ))} 
           </View>
 
           <View style={styles.componentContainer}>
             <Text style={styles.label}>Выбранные продукты:</Text>
-            {selectedProducts.map((product, index) => (
-              <View key={product.id} style={styles.productContainer}>
+            {selectedProducts.map((item, index) => (
+              <View key={item.product.id} style={styles.productContainer}>
                 <View style={styles.productLeft}>
                   <Image
-                    source={product.imageUrl ? { uri: product.imageUrl } : require("../../assets/default-product.jpg")}  // Assuming `imageUrl` is the field that holds the image URL
+                    source={item.product.imageUrl ? { uri: item.product.imageUrl } : require("../../assets/default-product.jpg")}
                     style={styles.productImage}
                   />
-                  <Text style={styles.productName}>{product.name}</Text>
+                  <Text style={styles.productName}>{item.product.name}</Text>
                 </View>
                 <View style={styles.productRight}>
-                  <Text>Жиры: {product.fats}</Text>
-                  <Text>Углеводы: {product.carbohydrates}</Text>
-                  <Text>Белки: {product.proteins}</Text>
-                  <Text>Калории: {product.kcals}</Text>
-
+                  <Text>Жиры: {item.product.fats}</Text>
+                  <Text>Углеводы: {item.product.carbohydrates}</Text>
+                  <Text>Белки: {item.product.proteins}</Text>
+                  <Text>Калории: {item.product.kcals}</Text>
+                  <Text>Количество: {item.count} г</Text>
                 </View>
               </View>
             ))}

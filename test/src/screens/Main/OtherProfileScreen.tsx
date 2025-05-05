@@ -225,6 +225,7 @@ const OtherProfileScreen = ({ route }) => {
                 </Text>
               </View>
               <Text style={styles.commentText}>{item.text}</Text>
+              <Text style={styles.commentRating}>{item.rating}</Text>
             </View>
           </View>
         ))}
@@ -235,6 +236,11 @@ const OtherProfileScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  commentRating: {
+    marginTop: 4,
+    color: '#555',
+    fontWeight: '600',
+  },
   productContainer: {
     flexDirection: 'row',
     alignItems: 'center',

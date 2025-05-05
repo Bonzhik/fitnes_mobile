@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet, FlatList, ScrollView, Image } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
-import { ProductR, DayR, TrainingR, ProfileCommentR } from '../../dtos/dtos';
+import { ProductR, ProductItemR, DayR, TrainingR, ProfileCommentR } from '../../dtos/dtos';
 import { ProductService } from '../../api/productService';
 import { DayService } from '../../api/dayService';
 import { TrainingService } from '../../api/trainingService';
@@ -14,7 +14,7 @@ const DiaryScreen = () => {
   const [userId, setUserId] = useState<Number | null>(null);
   const [currentDay, setCurrentDay] = useState<string | null>(null);
   const [days, setDays] = useState<DayR[]>([]);
-  const [products, setProducts] = useState<ProductR[]>([]);
+  const [products, setProducts] = useState<ProductItemR[]>([]);
   const [trainings, setTrainings] = useState<TrainingR[]>([]);
   const [comments, setComments] = useState<ProfileCommentR[]>([]);
   const [macros, setMacros] = useState({ protein: 0, fats: 0, carbs: 0 });
@@ -139,6 +139,7 @@ const DiaryScreen = () => {
                   <Text>Углеводы: {item.carbohydrates}</Text>
                   <Text>Белки: {item.proteins}</Text>
                   <Text>Калории: {item.kcals}</Text>
+                  <Text>Грамм: {item.count}</Text>
                 </View>
               </View>
             ))}
@@ -170,6 +171,7 @@ const DiaryScreen = () => {
                     </Text>
                   </View>
                   <Text style={styles.commentText}>{item.text}</Text>
+                  <Text style={styles.commentRating}>{item.rating}</Text>
                 </View>
               </View>
             ))}
@@ -181,6 +183,11 @@ const DiaryScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  commentRating: {
+    marginTop: 4,
+    color: '#555',
+    fontWeight: '600',
+  },
   productContainer: {
     flexDirection: 'row',
     alignItems: 'center',

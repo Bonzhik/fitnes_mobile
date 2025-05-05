@@ -14,6 +14,7 @@ namespace Business.Dtos.Read
         public string LastName { get; set; }
         public float Height { get; set; }
         public float Weigth { get; set; }
+        public float Rating { get; set; }
         public UserCategoryR CategoryR { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-import { ProductR } from "../dtos/dtos";
+import { ProductR, ProductItemR } from "../dtos/dtos";
 import api from "./apiClient";
 
 export class ProductService {
@@ -16,8 +16,8 @@ export class ProductService {
      * @param dayId Day ID.
      * @returns Products for the specified day.
      */
-    public static async getProductsByDay(dayId: Number): Promise<ProductR[]> {
-        const response = await api.get<ProductR[]>(`/products/byDay/${dayId}`);
+    public static async getProductsByDay(dayId: Number): Promise<ProductItemR[]> {
+        const response = await api.get<ProductItemR[]>(`/products/byDay/${dayId}`);
         return response.data;
     }
 
