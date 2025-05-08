@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getAccessToken, getRefreshToken, saveAccessToken, saveRefreshToken } from '../utils/storage';
 
 const api = axios.create({
-  baseURL: 'https://629a-95-66-135-33.ngrok-free.app/api',
+  baseURL: 'http://localhost:5192/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
     const refreshToken = await getRefreshToken();
     if (!refreshToken) { return null; }
 
-    const response = await axios.post('https://629a-95-66-135-33.ngrok-free.app/api/auth/refresh', {
+    const response = await axios.post('https://localhost:5192/api/auth/refresh', {
       refreshToken,
     });
 

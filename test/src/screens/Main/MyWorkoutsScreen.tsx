@@ -35,7 +35,8 @@ const MyWorkoutsScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.componentContainer}>
-            <Text>Тренировка - {item.name} Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+            <Text>Тренировка - {item.name}</Text>
+            <Text>Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
             <Text>{item.description}</Text>
             <Text>-</Text>
             <Button

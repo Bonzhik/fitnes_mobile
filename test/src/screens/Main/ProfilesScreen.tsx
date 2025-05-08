@@ -33,6 +33,15 @@ const ProfilesScreen = () => {
         <View style={styles.textContainer}>
           <Text style={styles.userName}>{item.firstName} {item.lastName}</Text>
           <Text style={styles.userCategory}>{item.categoryR.categoryName}</Text>
+          {item.rating > 0 && (
+            <View style={styles.ratingContainer}>
+              {Array.from({ length: 5 }, (_, i) => (
+                <Text key={i} style={styles.star}>
+                  {i < Math.round(item.rating) ? '★' : '☆'}
+                </Text>
+              ))}
+            </View>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -51,6 +60,15 @@ const ProfilesScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  ratingContainer: {
+    flexDirection: 'row',
+    marginTop: 4,
+  },
+  star: {
+    color: '#FFD700',
+    fontSize: 14,
+    marginRight: 2,
+  },
   userItem: {
     flexDirection: 'row',
     alignItems: 'center',

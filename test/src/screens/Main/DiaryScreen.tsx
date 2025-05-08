@@ -53,15 +53,18 @@ const DiaryScreen = () => {
 
       const totalMacros = dayProducts.reduce(
         (totals, product) => ({
-          protein: totals.protein + product.proteins,
-          fats: totals.fats + product.fats,
-          carbs: totals.carbs + product.carbohydrates,
+          protein: Math.round((totals.protein + product.product.proteins * product.count / 100) * 10) / 10,
+          fats: Math.round((totals.fats + product.product.fats * product.count / 100) * 10) / 10,
+          carbs: Math.round((totals.carbs + product.product.carbohydrates * product.count / 100) * 10) / 10,
         }),
         { protein: 0, fats: 0, carbs: 0 }
       );
       setMacros(totalMacros);
 
-      const totalCalories = dayProducts.reduce((sum, product) => sum + product.kcals, 0);
+      const totalCalories = Math.round(
+        dayProducts.reduce((sum, product) => sum + product.product.kcals * product.count / 100, 0) * 10
+      ) / 10;
+
       setCalories(totalCalories);
       setShowForm(false);
     } else {
@@ -83,62 +86,70 @@ const DiaryScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.componentContainer}>
-      <Calendar
-        markedDates={{
-          [currentDay || '']: { selected: true, selectedColor: 'blue' }, // Highlight the selected date
-        }}
-        onDayPress={(day) => { console.log('Day pressed'); handleDateSelect(day.dateString); }}
-      />
+        <Calendar
+          markedDates={{
+            [currentDay || '']: { selected: true, selectedColor: 'blue' }, // Highlight the selected date
+          }}
+          onDayPress={(day) => { console.log('Day pressed'); handleDateSelect(day.dateString); }}
+        />
       </View>
 
       {showForm ? (
-        <CreateDayForm selectedDate={currentDay} /> // Передаем текущую дату в форму
+        <CreateDayForm
+        selectedDate={currentDay}
+        onDayCreated={async () => {
+          // 🔹 Повторно загружаем список дней и детали текущего дня
+          const userDays = await DayService.getDaysByUser(userId);
+          setDays(userDays);
+          fetchDayDetails(currentDay!);
+        }}
+      />
       ) : (
         <>
 
           {/* Macros and Calories */}
           <View style={styles.componentContainer}>
-          <View style={styles.chartContainer}>
-            <PieChart
-              data={[
-                { name: 'Белки', population: macros.protein, color: 'blue', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-                { name: 'Жиры', population: macros.fats, color: 'red', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-                { name: 'Углеводы', population: macros.carbs, color: 'green', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-              ]}
-              width={300}
-              height={200}
-              chartConfig={{
-                backgroundColor: '#1cc910',
-                backgroundGradientFrom: '#eff3ff',
-                backgroundGradientTo: '#efefef',
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              }}
-              accessor="population"
-              backgroundColor="transparent"
-              paddingLeft="15"
-              style={styles.chart}
-            />
-            <Text style={styles.caloriesText}>Калории: {calories} ккал</Text>
-          </View>
+            <View style={styles.chartContainer}>
+              <PieChart
+                data={[
+                  { name: 'Белки', population: macros.protein, color: 'blue', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                  { name: 'Жиры', population: macros.fats, color: 'red', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                  { name: 'Углеводы', population: macros.carbs, color: 'green', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+                ]}
+                width={300}
+                height={200}
+                chartConfig={{
+                  backgroundColor: '#1cc910',
+                  backgroundGradientFrom: '#eff3ff',
+                  backgroundGradientTo: '#efefef',
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                }}
+                accessor="population"
+                backgroundColor="transparent"
+                paddingLeft="15"
+                style={styles.chart}
+              />
+              <Text style={styles.caloriesText}>Калории: {calories} ккал</Text>
+            </View>
           </View>
 
           {/* Products */}
           <View style={styles.componentContainer}>
             <Text style={styles.sectionTitle}>Продукты</Text>
             {products.map((item) => (
-              <View key={item.id} style={styles.productContainer}>
+              <View key={item.product.id} style={styles.productContainer}>
                 <View style={styles.productLeft}>
                   <Image
-                    source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/default-product.jpg")}
+                    source={item.product.imageUrl ? { uri: item.product.imageUrl } : require("../../../assets/default-product.jpg")}
                     style={styles.productImage}
                   />
-                  <Text style={styles.productName}>{item.name}</Text>
+                  <Text style={styles.productName}>{item.product.name}</Text>
                 </View>
                 <View style={styles.productRight}>
-                  <Text>Жиры: {item.fats}</Text>
-                  <Text>Углеводы: {item.carbohydrates}</Text>
-                  <Text>Белки: {item.proteins}</Text>
-                  <Text>Калории: {item.kcals}</Text>
+                  <Text>Жиры: {item.product.fats}</Text>
+                  <Text>Углеводы: {item.product.carbohydrates}</Text>
+                  <Text>Белки: {item.product.proteins}</Text>
+                  <Text>Калории: {item.product.kcals}</Text>
                   <Text>Грамм: {item.count}</Text>
                 </View>
               </View>
@@ -150,7 +161,8 @@ const DiaryScreen = () => {
             <Text style={styles.sectionTitle}>Тренировки</Text>
             {trainings.map((item) => (
               <View key={item.id} style={styles.listItem}>
-                <Text>Тренировка - {item.name} Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+                <Text>Тренировка - {item.name}
+                  Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
               </View>
             ))}
           </View>
@@ -171,7 +183,13 @@ const DiaryScreen = () => {
                     </Text>
                   </View>
                   <Text style={styles.commentText}>{item.text}</Text>
-                  <Text style={styles.commentRating}>{item.rating}</Text>
+                  <View style={styles.ratingContainer}>
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <Text key={i} style={styles.star}>
+                        {i < item.rating ? '★' : '☆'}
+                      </Text>
+                    ))}
+                  </View>
                 </View>
               </View>
             ))}
@@ -183,10 +201,29 @@ const DiaryScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  commentRating: {
+  commentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: 4,
-    color: '#555',
-    fontWeight: '600',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    marginLeft: 10,
+  },
+  star: {
+    color: '#FFD700',
+    fontSize: 16,
+    marginLeft: 1,
+  },
+  commentContentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  commentRating: {
+    flexDirection: 'row',
   },
   productContainer: {
     flexDirection: 'row',

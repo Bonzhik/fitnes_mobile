@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, FlatList, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, Button, FlatList, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import { DayService } from '../../api/dayService';
 import { ProductService } from '../../api/productService';
 import { TrainingService } from '../../api/trainingService';
 import { ProfileCommentService } from '../../api/profileCommentService';
-import { DayR, ProductR, TrainingR, ProfileCommentR, UserDto } from '../../dtos/dtos';
+import { DayR, ProductR, ProductItemR, TrainingR, ProfileCommentR, UserDto } from '../../dtos/dtos';
 import ProfileCommentForm from '../../components/ProfileCommentForm';
 import { UserService } from '../../api/userService';
 import { Calendar } from 'react-native-calendars';
@@ -17,7 +17,7 @@ const OtherProfileScreen = ({ route }) => {
   const navigation = useNavigation();
   const [currentDay, setCurrentDay] = useState<string | null>(null);
   const [days, setDays] = useState<DayR[]>([]);
-  const [products, setProducts] = useState<ProductR[]>([]);
+  const [products, setProducts] = useState<ProductItemR[]>([]);
   const [trainings, setTrainings] = useState<TrainingR[]>([]);
   const [comments, setComments] = useState<ProfileCommentR[]>([]); // State for comments
   const [macros, setMacros] = useState({
@@ -27,18 +27,22 @@ const OtherProfileScreen = ({ route }) => {
   });
   const [calories, setCalories] = useState(0);
 
+  const fetchComments = async () => {
+    const userComments = await ProfileCommentService.getComments(userId);
+    setComments(userComments);
+  };
+
   useEffect(() => {
     (async () => {
       const userDays = await DayService.getDaysByUser(userId);
       setDays(userDays);
-
-      const userComments = await ProfileCommentService.getComments(userId);
-      setComments(userComments);
-
+  
+      await fetchComments(); // используем функцию здесь
+  
       const userResponse = await UserService.getUserById(userId);
       setUser(userResponse);
-
-      const today = new Date().toISOString().split('T')[0]; // Формат YYYY-MM-DD
+  
+      const today = new Date().toISOString().split('T')[0];
       setCurrentDay(today);
     })();
   }, []);
@@ -60,15 +64,18 @@ const OtherProfileScreen = ({ route }) => {
 
       const totalMacros = dayProducts.reduce(
         (totals, product) => ({
-          protein: totals.protein + product.proteins,
-          fats: totals.fats + product.fats,
-          carbs: totals.carbs + product.carbohydrates,
+          protein: Math.round((totals.protein + product.product.proteins * product.count / 100) * 10) / 10,
+          fats: Math.round((totals.fats + product.product.fats * product.count / 100) * 10) / 10,
+          carbs: Math.round((totals.carbs + product.product.carbohydrates * product.count / 100) * 10) / 10,
         }),
         { protein: 0, fats: 0, carbs: 0 }
       );
       setMacros(totalMacros);
 
-      const totalCalories = dayProducts.reduce((sum, product) => sum + product.kcals, 0);
+      const totalCalories = Math.round(
+        dayProducts.reduce((sum, product) => sum + product.product.kcals * product.count / 100, 0) * 10
+      ) / 10;
+
       setCalories(totalCalories);
     } else {
       setProducts([]);
@@ -105,9 +112,20 @@ const OtherProfileScreen = ({ route }) => {
             <View>
               <Text style={styles.userText}>{user.firstName} {user.lastName}</Text>
               <Text style={styles.userText}>{user.email}</Text>
-              <Text style={styles.userText}>Рост: {user.height} см</Text>
-              <Text style={styles.userText}>Вес: {user.weigth} кг</Text>
+              <Text style={styles.userText}>Рост: {user.height.toFixed(2)} см</Text>
+              <Text style={styles.userText}>Вес: {user.weigth.toFixed(2)} кг</Text>
               <Text style={styles.userText}>Категория: {user.categoryR.categoryName}</Text>
+              <Text style={styles.userText}>Пол: {user.gender === 0 ? 'Мужской' : 'Женский'}</Text>
+              <Text style={styles.userText}>Описание: {user.description || 'Нет описания'}</Text>
+              {user.rating > 0 && (
+                <View style={styles.ratingContainer}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <Text key={i} style={styles.star}>
+                      {i < Math.round(user.rating) ? '★' : '☆'}
+                    </Text>
+                  ))}
+                </View>
+              )}
             </View>
           </View>
         )}
@@ -156,19 +174,20 @@ const OtherProfileScreen = ({ route }) => {
             <View style={styles.componentContainer}>
               <Text style={styles.sectionTitle}>Продукты</Text>
               {products.map((item) => (
-                <View key={item.id} style={styles.productContainer}>
+                <View key={item.product.id} style={styles.productContainer}>
                   <View style={styles.productLeft}>
                     <Image
-                      source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/default-product.jpg")}
+                      source={item.product.imageUrl ? { uri: item.product.imageUrl } : require("../../../assets/default-product.jpg")}
                       style={styles.productImage}
                     />
-                    <Text style={styles.productName}>{item.name}</Text>
+                    <Text style={styles.productName}>{item.product.name}</Text>
                   </View>
                   <View style={styles.productRight}>
-                    <Text>Жиры: {item.fats}</Text>
-                    <Text>Углеводы: {item.carbohydrates}</Text>
-                    <Text>Белки: {item.proteins}</Text>
-                    <Text>Калории: {item.kcals}</Text>
+                    <Text>Жиры: {item.product.fats}</Text>
+                    <Text>Углеводы: {item.product.carbohydrates}</Text>
+                    <Text>Белки: {item.product.proteins}</Text>
+                    <Text>Калории: {item.product.kcals}</Text>
+                    <Text>Грамм: {item.count}</Text>
                   </View>
                 </View>
               ))}
@@ -179,20 +198,23 @@ const OtherProfileScreen = ({ route }) => {
               <Text style={styles.sectionTitle}>Тренировки</Text>
               {trainings.map((item) => (
                 <View key={item.id} style={styles.listItem}>
-                  <Text>Тренировка - {item.name} Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
+                  <Text>Тренировка - {item.name}</Text>
+                  <Text>Создана: {item.createdBy.lastName} {item.createdBy.firstName}</Text>
                   <Text>{item.description}</Text>
-                  <Button
-                    title="View Training"
-                    onPress={() => navigation.navigate('TrainingDetails', {
-                      trainingId: item.id,
-                    })}
-                  />
-                  <Button
-                    title="Add"
-                    onPress={() => {
-                      handleAddToUser(item.id);
-                    }}
-                  />
+                  <View style={styles.buttonRow}>
+                    <TouchableOpacity
+                      style={[styles.button, styles.viewButton]}
+                      onPress={() => navigation.navigate('TrainingDetails', { trainingId: item.id })}
+                    >
+                      <Text style={styles.buttonText}>Посмотреть</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.button, styles.addButton]}
+                      onPress={() => handleAddToUser(item.id)}
+                    >
+                      <Text style={styles.buttonText}>Добавить себе</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               ))}
             </View>
@@ -211,23 +233,32 @@ const OtherProfileScreen = ({ route }) => {
       {/* Comments */}
       <View style={styles.componentContainer}>
         <Text style={styles.sectionTitle}>Комментарии</Text>
-        <ProfileCommentForm commentTo={userId} />
+        <ProfileCommentForm commentTo={userId} onCommentAdded={fetchComments} />
         {comments.map((item) => (
           <View key={item.id} style={styles.commentContainer}>
-            <View style={styles.commentUserContainer}>
-              <View style={styles.commentImageContainer}>
-                <Image
-                  source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
-                  style={styles.commentImage}
-                />
-                <Text style={styles.commentUserName}>
-                  {item.userR.firstName} {item.userR.lastName}
-                </Text>
-              </View>
+          <View style={styles.commentUserContainer}>
+            <View style={styles.commentImageContainer}>
+              <Image
+                source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
+                style={styles.commentImage}
+              />
+              <Text style={styles.commentUserName}>
+                {item.userR.firstName} {item.userR.lastName}
+              </Text>
+            </View>
+        
+            <View style={styles.commentTextWithRating}>
               <Text style={styles.commentText}>{item.text}</Text>
-              <Text style={styles.commentRating}>{item.rating}</Text>
+              <View style={styles.ratingContainer}>
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Text key={i} style={styles.star}>
+                    {i < Math.round(item.rating) ? '★' : '☆'}
+                  </Text>
+                ))}
+              </View>
             </View>
           </View>
+        </View>
         ))}
       </View>
 
@@ -236,10 +267,53 @@ const OtherProfileScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  commentRating: {
+  commentTextWithRating: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+  },
+  commentText: {
+    flexShrink: 1,
+    marginRight: 10,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+  },
+  star: {
+    color: '#FFD700',
+    fontSize: 16,
+    marginLeft: 1,
+  },
+  commentContentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: 4,
-    color: '#555',
-    fontWeight: '600',
+  },
+  commentRating: {
+    flexDirection: 'row',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  button: {
+    flex: 0.48,
+    padding: 10,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  viewButton: {
+    backgroundColor: '#007BFF',
+  },
+  addButton: {
+    backgroundColor: '#28A745',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   productContainer: {
     flexDirection: 'row',
@@ -288,11 +362,6 @@ const styles = StyleSheet.create({
   commentUserName: {
     marginTop: 5, // Отступ для фамилии и имени
     textAlign: 'center',
-  },
-  commentText: {
-    flex: 1, // Заполняем оставшееся пространство
-    marginTop: 5, // Отступ сверху
-    textAlign: 'left', // Текст комментария слева
   },
   container: {
     flex: 1,

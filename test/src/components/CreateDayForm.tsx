@@ -9,9 +9,10 @@ import { ProductR, ProductItemR, TrainingR } from '../dtos/dtos';
 
 interface CreateDayFormProps {
   selectedDate: string;
+  onDayCreated?: () => void;
 }
 
-const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
+const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate, onDayCreated}) => {
   const [products, setProducts] = useState<ProductR[]>([]);
   const [trainings, setTrainings] = useState<TrainingR[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductR[]>([]);
@@ -20,15 +21,16 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
   const [selectedTrainings, setSelectedTrainings] = useState<TrainingR[]>([]);
   const [productCountMap, setProductCountMap] = useState<{ [key: number]: number }>({});
 
+  const fetchData = async () => {
+    const productsData = await ProductService.getProducts();
+    const trainingsData = await TrainingService.getTrainings();
+    setProducts(productsData);
+    setFilteredProducts(productsData);
+    setTrainings(trainingsData);
+    setFilteredTrainings(trainingsData);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const productsData = await ProductService.getProducts();
-      const trainingsData = await TrainingService.getTrainings();
-      setProducts(productsData);
-      setFilteredProducts(productsData);
-      setTrainings(trainingsData);
-      setFilteredTrainings(trainingsData);
-    };
     fetchData();
   }, []);
 
@@ -65,13 +67,14 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
         try {
           const newDay: DayW = {
             dayDate: values.dayDate,
-            productIds: selectedProducts.map(item => item.product.id),
+            productIds: selectedProducts.map(item => [item.product.id, item.count]),
             trainingIds: selectedTrainings.map(item => item.id),
           };
           await DayService.createDay(newDay);
           resetForm();
           setSelectedProducts([]);
           setSelectedTrainings([]);
+          onDayCreated?.(); // 🔹 Вызов колбэка
         } catch (error) {
           console.error(error);
         }
@@ -155,7 +158,8 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate }) => {
             />
             {filteredTrainings.map(training => (
               <View key={training.id}>
-                <Text>Тренировка {training.name} Создана: {training.createdBy.firstName} {training.createdBy.lastName}</Text>
+                <Text>Тренировка {training.name}</Text>
+                <Text>Создана: {training.createdBy.firstName} {training.createdBy.lastName}</Text>
                 <TouchableOpacity
                   style={styles.addButton}
                   onPress={() => addTraining(training)}

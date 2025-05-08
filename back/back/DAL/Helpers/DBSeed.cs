@@ -73,10 +73,10 @@ namespace DAL.Helpers
                         FirstName = firstName,
                         LastName = lastName,
                         Email = email,
-                        PasswordHash = "1234", // Имитация хеша
+                        PasswordHash = "123456",
                         Description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                        Height = (float)(random.NextDouble() * 50 + 150), // от 150 до 200 см
-                        Weigth = (float)(random.NextDouble() * 40 + 50),  // от 50 до 90 кг
+                        Height = (float)(random.NextDouble() * 50 + 150),
+                        Weigth = (float)(random.NextDouble() * 40 + 50),
                         Gender = gender,
                         UserCategory = categories[random.Next(categories.Count)],
                         CreatedAt = now,
@@ -296,7 +296,7 @@ namespace DAL.Helpers
                         {
                             CommentBy = user,
                             CommentTo = target,
-                            Text = $"Комментарий к профилю {target.FirstName}",
+                            Text = $"Комментарий к профилю {target.FirstName} :-) Комментарий к профилю {target.FirstName} :-)",
                             Rating = rating,
                             CreatedAt = now,
                             UpdatedAt = now

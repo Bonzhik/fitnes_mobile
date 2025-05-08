@@ -23,32 +23,55 @@ const PersonalDataScreen = () => {
 
     return (
         <ScrollView style={styles.container}>
-        {user ? (
-            <View style={styles.componentContainer}>
-                <View style={styles.userInfoContainer}>
-                    <Image
-                        source={user.imageUrl ? { uri: user.imageUrl } : require("../../../assets/default-image.jpg")}
-                        style={styles.userImage}
-                    />
-                    <View>
-                        <Text style={styles.userText}>{user.firstName} {user.lastName}</Text>
-                        <Text style={styles.userText}>{user.email}</Text>
-                        <Text style={styles.userText}>Рост: {user.height} см</Text>
-                        <Text style={styles.userText}>Вес: {user.weigth} кг</Text>
-                        <Text style={styles.userText}>Категория: {user.categoryR.categoryName}</Text>
-                    </View>
+            {user ? (
+                <View style={styles.componentContainer}>
+                    {user && (
+                        <View style={styles.userInfoContainer}>
+                            <Image
+                                source={user.imageUrl ? { uri: user.imageUrl } : require("../../../assets/default-image.jpg")}
+                                style={styles.userImage}
+                            />
+
+                            <View>
+                                <Text style={styles.userText}>{user.firstName} {user.lastName}</Text>
+                                <Text style={styles.userText}>{user.email}</Text>
+                                <Text style={styles.userText}>Рост: {user.height.toFixed(2)} см</Text>
+                                <Text style={styles.userText}>Вес: {user.weigth.toFixed(2)} кг</Text>
+                                <Text style={styles.userText}>Категория: {user.categoryR.categoryName}</Text>
+                                <Text style={styles.userText}>Пол: {user.gender === 0 ? 'Мужской' : 'Женский'}</Text>
+                                <Text style={styles.userText}>Описание: {user.description || 'Нет описания'}</Text>
+                                {user.rating > 0 && (
+                                    <View style={styles.ratingContainer}>
+                                        {Array.from({ length: 5 }, (_, i) => (
+                                            <Text key={i} style={styles.star}>
+                                                {i < Math.round(user.rating) ? '★' : '☆'}
+                                            </Text>
+                                        ))}
+                                    </View>
+                                )}
+                            </View>
+                        </View>
+                    )}
                 </View>
-            </View>
-        ) : (
-            <View style={styles.loaderContainer}>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </View>
-        )}
-    </ScrollView>
+            ) : (
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            )}
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
+    ratingContainer: {
+        flexDirection: 'row',
+        marginTop: 4,
+    },
+    star: {
+        fontSize: 16,
+        color: '#FFD700',
+        marginRight: 2,
+    },
     container: {
         flex: 1, // Занимает всё пространство экрана
         padding: 20,

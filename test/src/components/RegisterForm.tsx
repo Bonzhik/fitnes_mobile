@@ -4,6 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Button from './Button';
 import { AuthService } from '../api/authService';
+import { Gender } from '../dtos/dtos';
 
 const RegisterForm = () => {
     const initialValues = {
@@ -33,6 +34,8 @@ const RegisterForm = () => {
                 height: Number(values.height),
                 weigth: Number(values.weight),
                 categoryId: Number(values.categoryId),
+                description: '',
+                gender: Gender.MALE
             });
             console.log('Registration successful:', response);
         } catch (error) {
@@ -118,7 +121,7 @@ const RegisterForm = () => {
                     />
                     {touched.categoryId && errors.categoryId && <Text style={styles.error}>{errors.categoryId}</Text>}
 
-                    <Button title="Register" onPress={handleSubmit} loading={isSubmitting} />
+                    <Button title="Зарегистрироваться" onPress={handleSubmit} loading={isSubmitting} />
                 </View>
             )}
         </Formik>

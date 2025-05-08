@@ -45,9 +45,9 @@ namespace Business.Services.Implementations
 
             var success = await _trainingCommentRepository.AddAsync(comment);
 
-            if (success)
+            if (!success)
             {
-                return true;
+                return false;
             }
 
             var updatedTraining = await _trainingRepository.GetByIdAsync(trainingCommentW.CommentTo);

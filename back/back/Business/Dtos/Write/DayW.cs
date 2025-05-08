@@ -9,7 +9,7 @@ namespace Business.Dtos.Write
     public class DayW
     {
         public DateTime DayDate { get; set; }
-        public long[,] ProductIds { get; set; }
+        public long[][] ProductIds { get; set; }
         public long[] TrainingIds { get; set; }
     }
 }

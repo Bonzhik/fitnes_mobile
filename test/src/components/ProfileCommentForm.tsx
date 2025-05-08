@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { ProfileCommentService } from '../api/profileCommentService';
 
-const ProfileCommentForm = ({ commentTo }) => {
+const ProfileCommentForm = ({ commentTo, onCommentAdded }) => {
     const validationSchema = Yup.object({
         text: Yup.string()
             .required('Комментарий обязателен')
@@ -27,16 +27,11 @@ const ProfileCommentForm = ({ commentTo }) => {
                 rating: Number(values.rating),  // Преобразуем строку в число
                 commentTo,
             };
-            const success = await ProfileCommentService.createProfileComment(profileCommentW);
-            if (success) {
-                Alert.alert('Успех', 'Комментарий отправлен!');
-                resetForm();
-            } else {
-                Alert.alert('Ошибка', 'Не удалось отправить комментарий');
-            }
+            await ProfileCommentService.createProfileComment(profileCommentW);
+            resetForm();
+            onCommentAdded();
         } catch (error) {
             console.error(error);
-            Alert.alert('Ошибка', 'Произошла ошибка при отправке комментария');
         }
     };
 

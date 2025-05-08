@@ -50,8 +50,8 @@ namespace Business.Services.Implementations
             int rows = dayW.ProductIds.GetLength(0);
             for (int i = 0; i < rows; i++)
             {
-                long productId = dayW.ProductIds[i, 0];
-                long count = dayW.ProductIds[i, 1];
+                long productId = dayW.ProductIds[i][0];
+                long count = dayW.ProductIds[i][1];
 
                 var product = await _productRepository.GetByIdAsync(productId);
                 if (product != null)

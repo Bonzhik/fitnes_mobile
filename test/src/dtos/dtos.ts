@@ -1,6 +1,6 @@
 export interface DayW {
-    dayDate: string; // ISO string
-    productIds: number[];
+    dayDate: string;
+    productIds: number[][];
     trainingIds: number[];
 }
 
@@ -28,6 +28,19 @@ export interface ProfileCommentR {
     rating: number;
 }
 
+export interface TrainingCommentW {
+    text: string;
+    rating: number;
+    commentTo: number;
+}
+
+export interface TrainingCommentR {
+    id: number;
+    text: string;
+    userR: UserDto;
+    rating: number;
+}
+
 export interface TrainingW {
     name: string;
     description: string;
@@ -39,22 +52,12 @@ export interface TrainingR {
     id: number;
     name: string;
     description: string;
+    rating: number;
     createdBy: UserDto;
 }
 
 export interface PlannerR {
     id: number;
-}
-
-export interface UserDto {
-    id: number;
-    imageUrl: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    height: number;
-    weigth: number;
-    category: UserCategoryDto;
 }
 
 export interface UserCategoryDto {
@@ -74,6 +77,8 @@ export interface RegisterDto {
     lastName: string;
     height: number;
     weigth: number;
+    description: string;
+    gender: Gender;
     categoryId: number;
 }
 
@@ -90,13 +95,21 @@ export interface UserCategoryDto {
 export interface UserDto {
     id: number;
     email: string;
+    imageUrl: string;
     firstName: string;
     lastName: string;
     height: number;
-    weight: number;
+    weigth: number;
+    rating: number;
+    description: string;
+    gender: Gender;
     categoryR: UserCategoryDto;
 }
 
+export enum Gender {
+    MALE,
+    FEMALE
+}
 export interface ProductR{
     id : number;
     imageUrl: string;
