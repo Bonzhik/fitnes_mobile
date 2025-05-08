@@ -12,9 +12,16 @@ namespace Business.Dtos.Read
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Description { get; set; }
+        public Gender Gender { get; set; }
         public float Height { get; set; }
         public float Weigth { get; set; }
         public float Rating { get; set; }
         public UserCategoryR CategoryR { get; set; }
+    }
+    public enum Gender
+    {
+        MALE,
+        FEMALE
     }
 }

@@ -2,6 +2,7 @@ using Business.Services.Implementations;
 using Business.Services.Interfaces;
 using Common.Services;
 using DAL.Context;
+using DAL.Helpers;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -71,6 +72,8 @@ using (var scope = app.Services.CreateScope())
     var serviceProvider = scope.ServiceProvider;
 
     var db = serviceProvider.GetRequiredService<ApplicationDbContext>();
+
+    DBSeed.Seed(db);
 }
 
 app.UseSwagger();

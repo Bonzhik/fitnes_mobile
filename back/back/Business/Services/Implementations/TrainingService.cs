@@ -68,6 +68,7 @@ namespace Business.Services.Implementations
                     Id = training.Id,
                     Name = training.Name,
                     Description = training.Description,
+                    Rating = training.Rating,
                     CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
                 });
             }
@@ -84,6 +85,7 @@ namespace Business.Services.Implementations
                 Id = training.Id,
                 Name = training.Name,
                 Description = training.Description,
+                Rating = training.Rating,
                 CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
             };
 
@@ -104,6 +106,7 @@ namespace Business.Services.Implementations
                     Id = training.Id,
                     Name = training.Name,
                     Description = training.Description,
+                    Rating = training.Rating,
                     CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
                 });
             }
@@ -125,6 +128,7 @@ namespace Business.Services.Implementations
                     Id = training.Id,
                     Name = training.Name,
                     Description = training.Description,
+                    Rating = training.Rating,
                     CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
                 });
             }
@@ -146,6 +150,7 @@ namespace Business.Services.Implementations
                     Id = training.Id,
                     Name = training.Name,
                     Description = training.Description,
+                    Rating = training.Rating,
                     CreatedBy = await _userService.GetUserByIdAsync(training.CreatedBy.Id), //Optimize
                 });
             }
@@ -162,11 +167,6 @@ namespace Business.Services.Implementations
             user.Trainings.Add(training);
 
             return await _userRepository.SaveAsync();
-        }
-
-        public async Task<float> CalculateRating(long trainingId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

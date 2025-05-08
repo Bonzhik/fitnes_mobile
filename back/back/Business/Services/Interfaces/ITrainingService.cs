@@ -18,6 +18,5 @@ namespace Business.Services.Interfaces
         Task<bool> CreateTrainingAsync(TrainingW trainingW, long userId);
         Task<ICollection<TrainingR>> GetAllAsync();
         Task<bool> AppendToUser(long userId, long trainingId);
-        Task<float> CalculateRating(long trainingId);
     }
 }

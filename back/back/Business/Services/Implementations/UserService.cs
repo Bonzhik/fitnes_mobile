@@ -37,6 +37,8 @@ namespace Business.Services.Implementations
                 PasswordHash = registerDto.Password, 
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
+                Gender = (Domain.Models.Gender)registerDto.Gender,
+                Description = registerDto.Description,
                 Height = registerDto.Height,
                 Weigth = registerDto.Weigth,
                 UserCategory = await _userCategoryRepository.GetByIdAsync(registerDto.CategoryId)
@@ -101,6 +103,9 @@ namespace Business.Services.Implementations
                 LastName = user.LastName,
                 Height = user.Height,
                 Weigth = user.Weigth,
+                Description = user.Description,
+                Gender = (Dtos.Read.Gender)user.Gender,
+                Rating = (float)user.Rating,
                 CategoryR = new UserCategoryR
                 {
                     Id = user.UserCategory.Id,
@@ -128,6 +133,9 @@ namespace Business.Services.Implementations
                 LastName = user.LastName,
                 Height = user.Height,
                 Weigth = user.Weigth,
+                Description = user.Description,
+                Gender = (Dtos.Read.Gender) user.Gender,
+                Rating = (float)user.Rating,
                 CategoryR = new UserCategoryR
                 {
                     Id = category.Id,

@@ -4,14 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{0A7A983D-61D5-4DCC-9472-7A2EB62BD6DC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A039392C-4E2E-4EB5-9617-020DB4111D16} = {A039392C-4E2E-4EB5-9617-020DB4111D16}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business", "Business\Business.csproj", "{65BD816E-A6C4-4D4C-9005-A527E7B67462}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{C57DD72E-5C2F-42D7-94C6-72419EE64E84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{A039392C-4E2E-4EB5-9617-020DB4111D16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{A039392C-4E2E-4EB5-9617-020DB4111D16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{A4F3BBE7-7DC2-446B-AA66-AD0FCB6B4047}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{A4F3BBE7-7DC2-446B-AA66-AD0FCB6B4047}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
