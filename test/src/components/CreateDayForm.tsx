@@ -179,7 +179,7 @@ const CreateDayForm: React.FC<CreateDayFormProps> = ({ selectedDate, onDayCreate
             ))}
           </View>
 
-          <Button title="Submit" onPress={handleSubmit} />
+          <Button title="Создать" onPress={handleSubmit} />
         </ScrollView>
       )}
     </Formik>

@@ -32,7 +32,7 @@ const PersonalDataScreen = () => {
                                 style={styles.userImage}
                             />
 
-                            <View>
+                            <View style={{ flex: 1 }}>
                                 <Text style={styles.userText}>{user.firstName} {user.lastName}</Text>
                                 <Text style={styles.userText}>{user.email}</Text>
                                 <Text style={styles.userText}>Рост: {user.height.toFixed(2)} см</Text>
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         marginRight: 2,
     },
     container: {
-        flex: 1, // Занимает всё пространство экрана
+        flex: 1,
         padding: 20,
         backgroundColor: '#f9f9f9',
     },
@@ -91,6 +91,9 @@ const styles = StyleSheet.create({
     userText: {
         fontSize: 14,
         fontWeight: "bold",
+        flexShrink: 1,
+        flexWrap: 'wrap',
+        maxWidth: 250,
     },
     userInfoContainer: {
         flexDirection: 'row',
@@ -99,8 +102,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     userImage: {
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
         borderRadius: 40,
         marginRight: 16,
     },

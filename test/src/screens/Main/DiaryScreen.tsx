@@ -96,14 +96,14 @@ const DiaryScreen = () => {
 
       {showForm ? (
         <CreateDayForm
-        selectedDate={currentDay}
-        onDayCreated={async () => {
-          // 🔹 Повторно загружаем список дней и детали текущего дня
-          const userDays = await DayService.getDaysByUser(userId);
-          setDays(userDays);
-          fetchDayDetails(currentDay!);
-        }}
-      />
+          selectedDate={currentDay}
+          onDayCreated={async () => {
+            // 🔹 Повторно загружаем список дней и детали текущего дня
+            const userDays = await DayService.getDaysByUser(userId);
+            setDays(userDays);
+            fetchDayDetails(currentDay!);
+          }}
+        />
       ) : (
         <>
 
@@ -178,17 +178,19 @@ const DiaryScreen = () => {
                       source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
                       style={styles.commentImage}
                     />
+                  </View>
+                  <View style={styles.commentTextWithRating}>
                     <Text style={styles.commentUserName}>
                       {item.userR.firstName} {item.userR.lastName}
                     </Text>
-                  </View>
-                  <Text style={styles.commentText}>{item.text}</Text>
-                  <View style={styles.ratingContainer}>
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <Text key={i} style={styles.star}>
-                        {i < item.rating ? '★' : '☆'}
-                      </Text>
-                    ))}
+                    <Text style={styles.commentText}>{item.text}</Text>
+                    <View style={styles.ratingContainer}>
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <Text key={i} style={styles.star}>
+                          {i < item.rating ? '★' : '☆'}
+                        </Text>
+                      ))}
+                    </View>
                   </View>
                 </View>
               </View>
@@ -201,6 +203,11 @@ const DiaryScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  commentTextWithRating: {
+    flex: 1,
+    flexDirection: 'column', // Чтобы текст и звёзды шли друг под другом
+    alignItems: 'flex-start',
+  },
   commentRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -36,12 +36,12 @@ const OtherProfileScreen = ({ route }) => {
     (async () => {
       const userDays = await DayService.getDaysByUser(userId);
       setDays(userDays);
-  
+
       await fetchComments(); // используем функцию здесь
-  
+
       const userResponse = await UserService.getUserById(userId);
       setUser(userResponse);
-  
+
       const today = new Date().toISOString().split('T')[0];
       setCurrentDay(today);
     })();
@@ -236,29 +236,29 @@ const OtherProfileScreen = ({ route }) => {
         <ProfileCommentForm commentTo={userId} onCommentAdded={fetchComments} />
         {comments.map((item) => (
           <View key={item.id} style={styles.commentContainer}>
-          <View style={styles.commentUserContainer}>
-            <View style={styles.commentImageContainer}>
-              <Image
-                source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
-                style={styles.commentImage}
-              />
-              <Text style={styles.commentUserName}>
-                {item.userR.firstName} {item.userR.lastName}
-              </Text>
-            </View>
-        
-            <View style={styles.commentTextWithRating}>
-              <Text style={styles.commentText}>{item.text}</Text>
-              <View style={styles.ratingContainer}>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <Text key={i} style={styles.star}>
-                    {i < Math.round(item.rating) ? '★' : '☆'}
-                  </Text>
-                ))}
+            <View style={styles.commentUserContainer}>
+              <View style={styles.commentImageContainer}>
+                <Image
+                  source={item.userR.imageUrl ? { uri: item.userR.imageUrl } : require("../../../assets/default-image.jpg")}
+                  style={styles.commentImage}
+                />
+                <Text style={styles.commentUserName}>
+                  {item.userR.firstName} {item.userR.lastName}
+                </Text>
+              </View>
+
+              <View style={styles.commentTextWithRating}>
+                <Text style={styles.commentText}>{item.text}</Text>
+                <View style={styles.ratingContainer}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <Text key={i} style={styles.star}>
+                      {i < Math.round(item.rating) ? '★' : '☆'}
+                    </Text>
+                  ))}
+                </View>
               </View>
             </View>
           </View>
-        </View>
         ))}
       </View>
 
@@ -268,17 +268,21 @@ const OtherProfileScreen = ({ route }) => {
 
 const styles = StyleSheet.create({
   commentTextWithRating: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'nowrap',
+    flex: 1,
+    flexDirection: 'column', // Текст и звезды идут по вертикали
+    justifyContent: 'center', // Центрируем контент по вертикали
+    alignItems: 'flex-start',
   },
   commentText: {
+    fontSize: 14,
+    maxWidth: 220, // Ограничиваем ширину текста, чтобы он не вылезал
     flexShrink: 1,
-    marginRight: 10,
+    flexWrap: 'wrap',
   },
   ratingContainer: {
     flexDirection: 'row',
+    alignSelf: 'center',
+    marginTop: 4, // Немного отступа между текстом и рейтингом
   },
   star: {
     color: '#FFD700',
@@ -340,24 +344,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   commentContainer: {
-    flexDirection: 'row', // Размещаем элементы в строку
+    flexDirection: 'row', // Картинка и текст идут по горизонтали
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc', // Для разделения комментариев
+    borderBottomColor: '#ccc', // Разделитель между комментариями
     alignItems: 'flex-start', // Выравнивание по верхнему краю
   },
   commentUserContainer: {
-    flexDirection: 'row', // Размещаем картинку и комментарий по горизонтали
-    alignItems: 'flex-start', // Выравниваем по верхнему краю
+    flexDirection: 'row', // Картинка и текст в одну строку
+    alignItems: 'flex-start', // Выравниваем элементы по верхнему краю
   },
   commentImageContainer: {
-    alignItems: 'center', // Выравнивание картинки и имени по центру
     marginRight: 10, // Отступ между картинкой и текстом
   },
   commentImage: {
-    width: 75,
-    height: 75,
-    borderRadius: 40,
+    width: 60,
+    height: 60,
+    borderRadius: 30, // половина от ширины/высоты
   },
   commentUserName: {
     marginTop: 5, // Отступ для фамилии и имени
@@ -376,6 +379,10 @@ const styles = StyleSheet.create({
   userText: {
     fontSize: 14,
     fontWeight: "bold",
+    flexShrink: 1,
+    flexWrap: 'wrap',
+    maxWidth: 250,
+    alignSelf: 'center'
   },
   componentContainer: {
     backgroundColor: '#fff',
@@ -393,10 +400,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-around",
     alignItems: 'center',
+    flexWrap: 'wrap'
   },
   userImage: {
-    width: 200,
-    height: 200,
+    width: 130,
+    height: 130,
     borderRadius: 40,
     marginRight: 16,
   },

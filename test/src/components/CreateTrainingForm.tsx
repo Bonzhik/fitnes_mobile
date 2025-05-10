@@ -102,7 +102,7 @@ const CreateTrainingForm = () => {
                         />
                     </View>
 
-                    <Button title="Submit" onPress={handleSubmit} />
+                    <Button title="Создать" onPress={handleSubmit} />
                 </ScrollView>
             )}
         </Formik>
