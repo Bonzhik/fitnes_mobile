@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Common.Services
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
         private readonly string _jwtSecret;
         private readonly string _refreshTokenSecret;

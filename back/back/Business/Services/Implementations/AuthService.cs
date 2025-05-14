@@ -14,10 +14,10 @@ namespace Business.Services.Implementations
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
-        private readonly JwtService _jwtService;
+        private readonly IJwtService _jwtService;
         private readonly IUserService _userService;
 
-        public AuthService(IUserRepository userRepository, JwtService jwtService, IUserService userService)
+        public AuthService(IUserRepository userRepository, IJwtService jwtService, IUserService userService)
         {
             _userRepository = userRepository;
             _userService = userService;

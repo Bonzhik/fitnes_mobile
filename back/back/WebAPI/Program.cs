@@ -32,7 +32,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         .UseLazyLoadingProxies()
         .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddSingleton<JwtService>();
+builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserCategoryRepository, UserCategoryRepository>();  
 builder.Services.AddScoped<IDaysRepository, DaysRepository>();  
