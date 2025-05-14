@@ -51,46 +51,71 @@ namespace Business.Services.Implementations
         {
             const int GOAL_COUNT = 10;
             const float MAX_DELTA = 50f;
+            const float HEIGHT_MULTIPLIER = 1.0f;
+            const float WEIGHT_MULTIPLIER = 0.4f;
             float delta = 5f;
 
             var currentUser = await _userRepository.GetByIdAsync(userId);
-            var allUsers = _userRepository.GetAllAsync()
-                .Where(u => u.Id != userId && u.Gender == currentUser.Gender);
+            if (currentUser == null) return new List<UserR>();
 
+            var allUsers = _userRepository.GetAllAsync();
             var selectedUsers = new List<User>();
-            var selectedUserIds = new HashSet<long>();
+            var selectedIds = new HashSet<long>();
+
+            var staticFilters = new List<Func<User, bool>>
+            {
+                u => u.Id != userId,
+                u => u.Gender == currentUser.Gender
+            };
+
+            var dynamicFilters = new List<Func<User, bool>>
+            {
+                u => Math.Abs(u.Height - currentUser.Height) <= delta * HEIGHT_MULTIPLIER,
+                u => Math.Abs(u.Weigth - currentUser.Weigth) <= delta * WEIGHT_MULTIPLIER
+            };
+
+            bool loosenStatic = false;
 
             while (selectedUsers.Count < GOAL_COUNT && delta <= MAX_DELTA)
             {
-                var batch = await allUsers
+                var filtered = allUsers
                     .Where(u =>
-                        Math.Abs(u.Height - currentUser.Height) <= delta &&
-                        Math.Abs(u.Weigth - currentUser.Weigth) <= delta &&
-                        !selectedUserIds.Contains(u.Id))
+                        (loosenStatic || staticFilters.All(f => f(u))) &&
+                        dynamicFilters.All(f => f(u)) &&
+                        !selectedIds.Contains(u.Id))
                     .OrderByDescending(u => u.Rating ?? 0)
                     .Take(GOAL_COUNT - selectedUsers.Count)
-                    .ToListAsync();
+                    .ToList();
 
-                foreach (var user in batch)
+                foreach (var user in filtered)
                 {
-                    if (selectedUserIds.Add(user.Id))
+                    if (selectedIds.Add(user.Id))
                         selectedUsers.Add(user);
                 }
 
                 delta += 5f;
+
+                if (delta >= 30f)
+                    loosenStatic = true;
+
+                dynamicFilters = new List<Func<User, bool>>
+                {
+                    u => Math.Abs(u.Height - currentUser.Height) <= delta,
+                    u => Math.Abs(u.Weigth - currentUser.Weigth) <= delta
+                };
             }
 
             if (selectedUsers.Count < GOAL_COUNT)
             {
-                var fallback = await allUsers
-                    .Where(u => !selectedUserIds.Contains(u.Id))
+                var fallback = allUsers
+                    .Where(u => !selectedIds.Contains(u.Id))
                     .OrderByDescending(u => u.Rating ?? 0)
                     .Take(GOAL_COUNT - selectedUsers.Count)
-                    .ToListAsync();
+                    .ToList();
 
                 foreach (var user in fallback)
                 {
-                    if (selectedUserIds.Add(user.Id))
+                    if (selectedIds.Add(user.Id))
                         selectedUsers.Add(user);
                 }
             }
@@ -105,7 +130,7 @@ namespace Business.Services.Implementations
                 Weigth = user.Weigth,
                 Description = user.Description,
                 Gender = (Dtos.Read.Gender)user.Gender,
-                Rating = (float)user.Rating,
+                Rating = (float)(user.Rating ?? 0),
                 CategoryR = new UserCategoryR
                 {
                     Id = user.UserCategory.Id,
